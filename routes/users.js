@@ -5,20 +5,18 @@ const router = express.Router();
 //Services
 const UserServices = require('../controllers/users');
 const AuthenticationServices = require('../controllers/authentication');
-const TestServices = require('../controllers/tests');
 
 //Routes
+
+// Authentication routes
+router.use("/auth")
 router.post('/register-user', AuthenticationServices.registerUser);
 router.get('/login-user', AuthenticationServices.loginUser);
 
-router.use(checkJWTToken);
-router.get('/all-available-tests', UserServices.getAvailableTestsForUsers);
 
-router.get('/take-test/:test_id?', checkJWTToken, TestServices.getTestDetails);
-router.post(
-  '/generate-user-test-report',
-  checkJWTToken,
-  UserServices.createUserTestReport
-);
+// User UD routes
+router.use("/user",checkJWTToken);
+router.put('/update', UserServices.update);
+router.delete('/update', UserServices.deleteOne);
 
 module.exports = router;

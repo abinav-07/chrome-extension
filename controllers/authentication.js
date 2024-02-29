@@ -7,14 +7,23 @@ const { ValidationException } = require("../exceptions/httpsExceptions");
 
 //Queries
 const UsersQueries = require("../queries/users");
-const RoleQueries = require("../queries/role");
 
 
 const jwtSecretKey = `${process.env.JWT_SECRET_KEY}`;
 
+/**
+ * Register a user.
+ * @param {string} first_name - first name of the person
+ * @param {string} last_name - last name of the person
+ * @param {string} email - email of the person
+ * @param {string} password - password
+ * @param {string} confirm_password - final Password
+ * @returns {JSON} Returns the json value
+ */
 const registerUser = async (req, res, next) => {
     const data = req.body;
 
+    // Joi validations
     const schema = Joi.object({
         first_name: Joi.string().required(),
         last_name: Joi.string().required(),
@@ -29,7 +38,6 @@ const registerUser = async (req, res, next) => {
                 'any.only': "Passwords do not match",
                 'string.required': 'Confirm Password is required'
             }),
-        role_id: Joi.number().required()
     });
 
     const validationResult = schema.validate(data, { abortEarly: false });
@@ -46,13 +54,9 @@ const registerUser = async (req, res, next) => {
 
         const user = await UsersQueries.getUser({ email: data.email });
 
-        const roleResponse = await RoleQueries.getRoles({ id: data.role_id });
-
-        //Check Role and User
-        if (!roleResponse || !roleResponse.role) throw new ValidationException(null, "Role Not Found!");
-
         if (user && user.email) throw new ValidationException(null, "User Already Registered!");
 
+        // Create new user
         const registerResponse = await UsersQueries.createUser(data);
 
         const payload = {
@@ -60,9 +64,9 @@ const registerUser = async (req, res, next) => {
             first_name: registerResponse.first_name,
             last_name: registerResponse.last_name,
             email: registerResponse.email,
-            role: roleResponse.role
         }
 
+        // Auth sign in
         const token = jwt.sign(payload, jwtSecretKey);
 
         res.status(200).json({
@@ -75,9 +79,16 @@ const registerUser = async (req, res, next) => {
     }
 };
 
+/**
+ * Login a user.
+ * @param {string} email - first name of the person
+ * @param {string} password - password
+ * @returns {JSON} Returns the json value
+ */
 const loginUser = async (req, res, next) => {
     const data = req.body;
 
+    // Joi validation
     const schema = Joi.object({
         email: Joi.string().required().email(),
         password: Joi.string().required()
@@ -88,6 +99,7 @@ const loginUser = async (req, res, next) => {
     try {
         if (validationResult && validationResult.error) throw new ValidationException(null, validationResult.error);
 
+        // Check if user exists
         const user = await UsersQueries.getUser({ email: data.email });
 
         if (!user || !user.email) throw new ValidationException(null, "User Not Registered");
@@ -99,9 +111,9 @@ const loginUser = async (req, res, next) => {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
-            role: user.role
         };
 
+        // Auth sign in
         const token = jwt.sign(payload, jwtSecretKey);
 
         res.status(200).json({

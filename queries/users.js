@@ -1,10 +1,15 @@
-const { Roles, Users, UserTestReport, Sequelize } = require('../models');
+const { Users } = require('../models');
 
+/*
+ Create a class named UserQueries which will be used to 
+ communicate with the database using sequelize
+*/
 class UserQueries {
   table() {
     return this.Users;
   }
 
+  // Get User using id or any fitler
   async getUser(filter = null) {
     const query = {
       raw: true,
@@ -14,14 +19,6 @@ class UserQueries {
         'last_name',
         'email',
         'password',
-        [Sequelize.col('user_role.role'), 'role'],
-      ],
-      include: [
-        {
-          model: Roles,
-          attributes: [],
-          as: 'user_role',
-        },
       ],
     };
 
@@ -30,12 +27,32 @@ class UserQueries {
     return await this.table().findOne(query);
   }
 
+  // Create new user
   async createUser(userData) {
     return await this.table().create(userData);
   }
 
-  async createUserTestReport(userTestReport) {
-    return await UserTestReport.create(userTestReport);
+  // update user using id and values
+  async updateUser(id,values) {
+    return await this.table().update(
+      {...values},
+      {
+        where:{
+          id,
+        },
+        // Return updated values
+        returning: true,
+      }
+    )
+  }
+
+  // delete user using id
+  async deleteUser(id) {
+    return await this.table().destroy({
+      where:{
+        id,
+      }
+    })
   }
 }
 
