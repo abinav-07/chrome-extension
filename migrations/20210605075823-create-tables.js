@@ -1,4 +1,4 @@
-'use strict';
+"use strict"
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -11,7 +11,7 @@ module.exports = {
 
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.createTable(
-        'users',
+        "users",
         {
           id: {
             type: Sequelize.DataTypes.INTEGER,
@@ -40,16 +40,16 @@ module.exports = {
           },
           created_at: {
             type: Sequelize.DataTypes.DATE,
-            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+            defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
           },
           updated_at: {
             type: Sequelize.DataTypes.DATE,
-            defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+            defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
           },
         },
-        { transaction: t }
-      );
-    });
+        { transaction: t },
+      )
+    })
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -60,7 +60,7 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     return queryInterface.sequelize.transaction(async (t) => {
-      await queryInterface.dropTable("users",{transaction:t})
+      await queryInterface.dropTable("users", { transaction: t })
     })
   },
-};
+}
