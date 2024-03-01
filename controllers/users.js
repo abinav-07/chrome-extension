@@ -1,21 +1,35 @@
 const Joi = require("joi")
 const { ValidationException } = require("../exceptions/httpsExceptions")
+const bcrypt = require("bcrypt")
 
 //Queries
 const UserQueries = require("../queries/users")
 
-/**
- * Update a user.
- * @param {string} first_name - first name of the person
- * @param {string} last_name - last name of the person
- * @param {string} email - email of the person
- * @param {string} password - password
- * @param {string} confirm_password - final Password
- * @returns {JSON} Returns the json value
+ /**
+ * @method Update User
+ * 
+ * @description PATCH Request-> Update currently logged in user
+ * 
+ * @param PATCH /user/update
+ * @param {string} first_name - The updated first name of the user.
+ * @param {string} last_name - The updated last name of the user.
+ * @param {string} email - The updated email of the user.
+ * @param {string} password - The new password.
+ * @param {string} confirm_password - The confirmation of the new password.
+ * 
+ * @example 
+ * {
+    "first_name":"Test",
+    "last_name":"Me",
+    "email":"test@mailinator.com",
+    "password":"Test@123",
+    "confirm_password":"Test@123"
+ * }
+ *   
+ * @returns {Object} Returns a JSON object representing the updated user data.
+ * @throws {Error} Throws an error if the update process fails.
  */
 const update = async (req, res, next) => {
-  // Get autheticated user from our req payload, set in JWT
-  const { user_id } = req.user
   // get payload
   const data = req.body
 
@@ -40,6 +54,9 @@ const update = async (req, res, next) => {
   const validationResult = schema.validate(data, { abortEarly: false })
 
   try {
+    // Get autheticated user from our req payload, set in JWT
+    const { user_id } = req.user
+
     if (validationResult && validationResult.error)
       throw new ValidationException(null, validationResult.error)
 
@@ -51,7 +68,9 @@ const update = async (req, res, next) => {
     // Check if email already exists
     const user = await UserQueries.getUser({ email: data.email })
 
-    if (user && user.email) throw new ValidationException(null, "Email Already Exists!")
+    // Check if email already exists
+    if (user && user.email && checkUser.email !== data.email)
+      throw new ValidationException(null, "Email Already Exists!")
 
     //Hash Password
     const hashedPassword = bcrypt.hashSync(data.password, 10)
@@ -61,18 +80,10 @@ const update = async (req, res, next) => {
     delete data.confirm_password
 
     // Update user
-    const updateUser = await UserQueries.updateUser(user_id, data)
-
-    const payload = {
-      user_id: updateUser.id,
-      first_name: updateUser.first_name,
-      last_name: updateUser.last_name,
-      email: updateUser.email,
-    }
+    await UserQueries.updateUser(user_id, data)
 
     res.status(200).json({
       success: true,
-      user: payload,
     })
   } catch (err) {
     next(err)
@@ -80,14 +91,18 @@ const update = async (req, res, next) => {
 }
 
 /**
- * Delete currently logged in user.
- * @returns {JSON} Returns the json value
+ * @method Delete User
+ * 
+ * @param DELETE /user/delete
+ * 
+ * @description DELETE Request-> Delete currently logged in user.
+ * @returns {Object} Returns the json value
  */
 const deleteOne = async (req, res, next) => {
-  // Get autheticated user from our req payload, set in JWT
-  const { user_id } = req.user
-
   try {
+    // Get autheticated user from our req payload, set in JWT
+    const { user_id } = req.user
+
     // Check if user exists in our DB
     const checkUser = await UserQueries.getUser({ id: user_id })
 

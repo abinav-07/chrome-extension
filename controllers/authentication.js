@@ -11,13 +11,28 @@ const UsersQueries = require("../queries/users")
 const jwtSecretKey = `${process.env.JWT_SECRET_KEY}`
 
 /**
- * Register a user.
- * @param {string} first_name - first name of the person
- * @param {string} last_name - last name of the person
- * @param {string} email - email of the person
- * @param {string} password - password
- * @param {string} confirm_password - final Password
- * @returns {JSON} Returns the json value
+ * @method Register User
+ * 
+ * @description POST Request-> Register a user
+ * 
+ * @param POST  /auth/register
+ * @param {string} first_name - The updated first name of the user.
+ * @param {string} last_name - The updated last name of the user.
+ * @param {string} email - The updated email of the user.
+ * @param {string} password - The new password.
+ * @param {string} confirm_password - The confirmation of the new password.
+ * 
+ * @example 
+ * {
+    "first_name":"Test",
+    "last_name":"Me",
+    "email":"test@mailinator.com",
+    "password":"Test@123",
+    "confirm_password":"Test@123"
+ * }
+ *
+ * @returns {Object} Returns a JSON object representing the updated user data.
+ * @throws {Error} Throws an error if the update process fails.
  */
 const registerUser = async (req, res, next) => {
   const data = req.body
@@ -80,10 +95,22 @@ const registerUser = async (req, res, next) => {
 }
 
 /**
- * Login a user.
+ * @method Login User
+ * 
+ * @description POST Request-> Log in user
+ * 
+ * @param POST /auth/login
  * @param {string} email - first name of the person
  * @param {string} password - password
- * @returns {JSON} Returns the json value
+ * 
+ * @example 
+ * {
+    "email":"test@mailinator.com",
+    "password":"Test@123"
+ * }
+ *
+ * @returns {Object} Returns a JSON object representing the updated user data.
+ * @throws {Error} Throws an error if the update process fails.
  */
 const loginUser = async (req, res, next) => {
   const data = req.body

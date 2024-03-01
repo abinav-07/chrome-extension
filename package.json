@@ -1,27 +1,33 @@
 {
+  "name": "mock-user",
+  "version": "0.0.0",
   "scripts": {
-    "start": "node index.js",
-    "format:fix": "prettier --write './**/*.{js,ts}{x,}'"
+    "start": "nodemon index.js",
+    "format:fix": "prettier --write './**/*.{js,ts}{x,}'",
+    "doc": "concurrently \"jsdoc -c jsdoc.json\" \"apidoc -i ./controllers -e node_modules -o ./documentation/api\""
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
+    "chalk": "^4",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
-    "nodemon": "^2.0.7",
     "path": "^0.12.7",
     "prettier": "^3.2.5",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
-    "standard": "^16.0.3"
+    "standard": "^16.0.3",
+    "concurrently": "^7.6.0"
   },
   "devDependencies": {
-    "eslint": "^7.13.0",
+    "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1"
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^3.1.0",
+    "jsdoc": "^3.6.7"
   }
 }

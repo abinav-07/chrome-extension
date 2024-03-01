@@ -6,7 +6,7 @@ const { Users } = require("../models")
 */
 class UserQueries {
   table() {
-    return this.Users
+    return Users
   }
 
   // Get User using id or any fitler
@@ -34,8 +34,6 @@ class UserQueries {
         where: {
           id,
         },
-        // Return updated values
-        returning: true,
       },
     )
   }

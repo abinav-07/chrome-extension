@@ -1,6 +1,7 @@
 const express = require("express")
 const cors = require("cors")
 const dotenv = require("dotenv")
+const chalk = require("chalk")
 
 dotenv.config()
 
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 
 //Routes
 app.use("/", require("./routes/users"))
+app.use("/", require("./routes/auth"))
 
 //Error Handler
 app.use((req, res, next) =>
@@ -35,5 +37,5 @@ app.use((req, res, next) =>
 app.use(errorHandler)
 
 app.listen(process.env.PORT || 5000, () => {
-  console.log("Server Started")
+  console.log(chalk.blue(`Server started on ${process.env.PORT || 5000}!`))
 })
