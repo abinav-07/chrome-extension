@@ -1,86 +1,127 @@
-const Joi = require("joi");
-const { ValidationException } = require("../exceptions/httpsExceptions");
+const Joi = require("joi")
+const { ValidationException } = require("../exceptions/httpsExceptions")
+const bcrypt = require("bcrypt")
 
 //Queries
-const QuestionsQueries = require("../queries/questions");
-const UserQueries = require("../queries/users");
-const TestQueries = require("../queries/tests");
+const UserQueries = require("../queries/users")
 
-const getAvailableTestsForUsers = async (req, res, next) => {
+/**
+ * @method Update User
+ * 
+ * @description PATCH Request-> Update currently logged in user
+ * 
+ * @param PATCH /user/update
+ * @param {string} first_name - The updated first name of the user.
+ * @param {string} last_name - The updated last name of the user.
+ * @param {string} email - The updated email of the user.
+ * @param {string} password - The new password.
+ * @param {string} confirm_password - The confirmation of the new password.
+ * 
+ * @example 
+ * {
+    "first_name":"Test",
+    "last_name":"Me",
+    "email":"test@mailinator.com",
+    "password":"Test@123",
+    "confirm_password":"Test@123"
+ * }
+ *   
+ * @returns {Object} Returns a JSON object representing the updated user data.
+ * @throws {Error} Throws an error if the update process fails.
+ */
+const update = async (req, res, next) => {
+  // get payload
+  const data = req.body
 
-    try {
+  // Joi validations
+  const schema = Joi.object({
+    first_name: Joi.string().required(),
+    last_name: Joi.string().required(),
+    email: Joi.string().required().email(),
+    password: Joi.string()
+      .required()
+      .pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,20})"))
+      .messages({
+        "string.pattern.base": "Password must contain alphabets and numbers",
+        "string.required": "Password is required",
+      }),
+    confirm_password: Joi.string().equal(Joi.ref("password")).required().messages({
+      "any.only": "Passwords do not match",
+      "string.required": "Confirm Password is required",
+    }),
+  })
 
-        const getTests = await TestQueries.getTests({ is_available: true });
+  const validationResult = schema.validate(data, { abortEarly: false })
 
-        if (!getTests || !getTests.length > 0) {
-            res.status(200).json({ message: "No Tests Available" }); return;
-        }
+  try {
+    // Get autheticated user from our req payload, set in JWT
+    const { user_id } = req.user
 
-        const getAllAvailableTests = getTests.map(data => ({
-            test_id: data.id,
-            title: data.title,
-            description: data.description,
-            is_available: data.is_available
-        }));
+    if (validationResult && validationResult.error)
+      throw new ValidationException(null, validationResult.error)
 
-        res.status(200).json(getAllAvailableTests);
+    // Check if user exists in our DB
+    const checkUser = await UserQueries.getUser({ id: user_id })
 
-    } catch (err) {
-        next(err);
-    }
+    if (!checkUser) throw new ValidationException(null, "User not found!")
+
+    // Check if email already exists
+    const user = await UserQueries.getUser({ email: data.email })
+
+    // Check if email already exists
+    if (user && user.email && checkUser.email !== data.email)
+      throw new ValidationException(null, "Email Already Exists!")
+
+    //Hash Password
+    const hashedPassword = bcrypt.hashSync(data.password, 10)
+    data.password = hashedPassword
+
+    //Remove Confirmed Password from body data
+    delete data.confirm_password
+
+    // Update user
+    await UserQueries.updateUser(user_id, data)
+
+    res.status(200).json({
+      success: true,
+    })
+  } catch (err) {
+    next(err)
+  }
 }
 
-const createUserTestReport = async (req, res, next) => {
-    const { user_id } = req.user;
+/**
+ * @method Delete User
+ *
+ * @param DELETE /user/delete
+ *
+ * @description DELETE Request-> Delete currently logged in user.
+ * @returns {Object} Returns the json value
+ */
+const deleteOne = async (req, res, next) => {
+  try {
+    // Get autheticated user from our req payload, set in JWT
+    const { user_id } = req.user
 
-    const data = req.body;
-    const schema = Joi.object({
-        test_id: Joi.number().required(),
-        user_answers: Joi.array().min(1).items(
-            Joi.object({
-                question_id: Joi.number().required(),
-                option_id: Joi.number().required()
-            })
-        ).required(),
-    });
+    // Check if user exists in our DB
+    const checkUser = await UserQueries.getUser({ id: user_id })
 
-    const validationResult = schema.validate(data, { abortEarly: false });
+    if (!checkUser) throw new ValidationException(null, "User not found!")
 
-    try {
+    // Delete User
+    await UserQueries.deleteUser(user_id)
 
-        if (validationResult && validationResult.error) throw new ValidationException(null, validationResult.error);
-
-        const correctAnswers = await QuestionsQueries.getCorrectAnswers({ test_id: data.test_id });
-
-        //Sorting Answers for Correct Comparisons of objects
-        const sortedCorrectAnswers = JSON.stringify(correctAnswers.sort((a, b) => a.question_id - b.question_id));
-
-        const sortedUserAnswers = JSON.stringify(data.user_answers.sort((a, b) => a.question_id - b.question_id));
-
-        //Both Lengths must be equal to insure user answered all questions
-        if (sortedCorrectAnswers.length !== sortedUserAnswers.length) throw new ValidationException(null, "All test question not sent in body!");
-
-        const has_passed = sortedCorrectAnswers === sortedUserAnswers;
-
-        await UserQueries.createUserTestReport({
-            test_id: data.test_id,
-            user_id: user_id,
-            has_passed: has_passed
-        });
-
-        const payload = {
-            test_id: data.test_id,
-            has_passed: has_passed
-        };
-
-        res.status(200).json(payload);
-
-    } catch (err) {
-        next(err);
+    const payload = {
+      success: true,
     }
+
+    res.status(200).json(payload)
+  } catch (err) {
+    next(err)
+  }
 }
 
 module.exports = {
-    createUserTestReport,
-    getAvailableTestsForUsers
+  update,
+  deleteOne,
 }
