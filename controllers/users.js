@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt")
 //Queries
 const UserQueries = require("../queries/users")
 
- /**
+/**
  * @method Update User
  * 
  * @description PATCH Request-> Update currently logged in user
@@ -92,9 +92,9 @@ const update = async (req, res, next) => {
 
 /**
  * @method Delete User
- * 
+ *
  * @param DELETE /user/delete
- * 
+ *
  * @description DELETE Request-> Delete currently logged in user.
  * @returns {Object} Returns the json value
  */
