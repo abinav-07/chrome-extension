@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here such as belongsto, has, hasMany and so on
+      Users.hasMany(models.UserFeatures, { foreignKey: "user_id", as: "user_features" });
     }
   }
   Users.init(
@@ -19,15 +20,15 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       first_name: {
-        type: DataTypes.STRING(256),
+        type: DataTypes.STRING(255),
         allowNull: false,
       },
       last_name: {
-        type: DataTypes.STRING(256),
+        type: DataTypes.STRING(255),
         allowNull: false,
       },
       email: {
-        type: DataTypes.STRING(256),
+        type: DataTypes.STRING(255),
         allowNull: false,
         validate: {
           isEmail: true,
@@ -35,12 +36,16 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       password: {
-        type: DataTypes.STRING(256),
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      role: {
+        type:DataTypes.ENUM("Admin","User"),
         allowNull: false,
       },
     },
     {
-      timestamps: false,
+      timestamps: true,
       sequelize,
       modelName: "Users",
       tableName: "users",

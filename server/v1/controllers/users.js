@@ -6,28 +6,41 @@ const bcrypt = require("bcrypt")
 const UserQueries = require("../queries/users")
 
 /**
- * @method Update User
+ * @api {patch} /v1/user/update Update User
+ * @apiName UpdateUser
+ * @apiGroup User
+ * @apiDescription Update currently logged in user
  * 
- * @description PATCH Request-> Update currently logged in user
+ * @apiParam {String} first_name The updated first name of the user.
+ * @apiParam {String} last_name The updated last name of the user.
+ * @apiParam {String} email The updated email of the user.
+ * @apiParam {String} password The new password.
+ * @apiParam {String} confirm_password The confirmation of the new password.
  * 
- * @param PATCH /user/update
- * @param {string} first_name - The updated first name of the user.
- * @param {string} last_name - The updated last name of the user.
- * @param {string} email - The updated email of the user.
- * @param {string} password - The new password.
- * @param {string} confirm_password - The confirmation of the new password.
- * 
- * @example 
+ * @apiParamExample {json} Request Example:
  * {
-    "first_name":"Test",
-    "last_name":"Me",
-    "email":"test@mailinator.com",
-    "password":"Test@123",
-    "confirm_password":"Test@123"
+ *    "first_name": "Test",
+ *    "last_name": "Me",
+ *    "email": "test@mailinator.com",
+ *    "password": "Test@123",
+ *    "confirm_password": "Test@123"
  * }
  *   
- * @returns {Object} Returns a JSON object representing the updated user data.
- * @throws {Error} Throws an error if the update process fails.
+ * @apiSuccess {Object} Success message
+ * 
+ * @apiSuccessExample {json} Success Response:
+ * HTTP/1.1 200 OK
+ * {
+ *    "success": true,
+ * }
+ * 
+ * @apiError {Object} error Error object if the update process fails.
+ * 
+ * @apiErrorExample {json} Error Response:
+ * HTTP/1.1 500 Internal Server Error
+ * {
+ *    "error": "Error message"
+ * }
  */
 const update = async (req, res, next) => {
   // get payload
@@ -91,12 +104,26 @@ const update = async (req, res, next) => {
 }
 
 /**
- * @method Delete User
+ * @api {delete} /v1/user/delete Delete User
+ * @apiName DeleteUser
+ * @apiGroup User
+ * @apiDescription Delete currently logged in user
  *
- * @param DELETE /user/delete
+ * @apiSuccess {Object} Returns the JSON object representing the success message.
  *
- * @description DELETE Request-> Delete currently logged in user.
- * @returns {Object} Returns the json value
+ * @apiSuccessExample {json} Success Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "success": true
+ *     }
+ *
+ * @apiError {Object} error Error object if the deletion process fails.
+ *
+ * @apiErrorExample {json} Error Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "error": "Err message."
+ *     }
  */
 const deleteOne = async (req, res, next) => {
   try {

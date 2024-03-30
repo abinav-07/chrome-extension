@@ -11,28 +11,42 @@ const UsersQueries = require("../queries/users")
 const jwtSecretKey = `${process.env.JWT_SECRET_KEY}`
 
 /**
- * @method Register User
+ * @api {post} /v1/auth/register Register User
+ * @apiName RegisterUser
+ * @apiGroup Authentication
+ * @apiDescription Register a user
  * 
- * @description POST Request-> Register a user
+ * @apiParam {String} first_name The first name of the user.
+ * @apiParam {String} last_name The last name of the user.
+ * @apiParam {String} email The email of the user.
+ * @apiParam {String} password The password of the user.
+ * @apiParam {String} confirm_password The confirmation of the password.
  * 
- * @param POST  /auth/register
- * @param {string} first_name - The updated first name of the user.
- * @param {string} last_name - The updated last name of the user.
- * @param {string} email - The updated email of the user.
- * @param {string} password - The new password.
- * @param {string} confirm_password - The confirmation of the new password.
- * 
- * @example 
+ * @apiParamExample {json} Request Example:
  * {
-    "first_name":"Test",
-    "last_name":"Me",
-    "email":"test@mailinator.com",
-    "password":"Test@123",
-    "confirm_password":"Test@123"
+ *    "first_name": "Test",
+ *    "last_name": "Me",
+ *    "email": "test@mailinator.com",
+ *    "password": "Test@123",
+ *    "confirm_password": "Test@123"
  * }
- *
- * @returns {Object} Returns a JSON object representing the updated user data.
- * @throws {Error} Throws an error if the update process fails.
+ *   
+ * @apiSuccess {Object} user JSON object representing the registered user data.
+ * 
+ * @apiSuccessExample {json} Success Response:
+ * HTTP/1.1 200 OK
+ * {
+ *    "user": UserPayload,
+ *    "success": true,
+ * }
+ * 
+ * @apiError {Object} error Error object if the registration process fails.
+ * 
+ * @apiErrorExample {json} Error Response:
+ * HTTP/1.1 500 Internal Server Error
+ * {
+ *    "error": "Registration failed."
+ * }
  */
 const registerUser = async (req, res, next) => {
   const data = req.body
@@ -95,22 +109,36 @@ const registerUser = async (req, res, next) => {
 }
 
 /**
- * @method Login User
+ * @api {post} /v1/auth/login Login User
+ * @apiName LoginUser
+ * @apiGroup Authentication
+ * @apiDescription Log in user
  * 
- * @description POST Request-> Log in user
+ * @apiParam {String} email Email of the user.
+ * @apiParam {String} password Password of the user.
  * 
- * @param POST /auth/login
- * @param {string} email - first name of the person
- * @param {string} password - password
- * 
- * @example 
+ * @apiParamExample {json} Request Example:
  * {
-    "email":"test@mailinator.com",
-    "password":"Test@123"
+ *    "email": "test@mailinator.com",
+ *    "password": "Test@123"
  * }
- *
- * @returns {Object} Returns a JSON object representing the updated user data.
- * @throws {Error} Throws an error if the update process fails.
+ *   
+ * @apiSuccess {Object} user JSON object representing the user data.
+ * 
+ * @apiSuccessExample {json} Success Response:
+ * HTTP/1.1 200 OK
+ * {
+ *    "user": UserPayload,
+ *    "success": true,
+ * }
+ * 
+ * @apiError {Object} error Error object if the login process fails.
+ * 
+ * @apiErrorExample {json} Error Response:
+ * HTTP/1.1 401 Unauthorized
+ * {
+ *    "error": "Auth error."
+ * }
  */
 const loginUser = async (req, res, next) => {
   const data = req.body
