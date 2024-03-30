@@ -1,5 +1,5 @@
-"use strict"
 const { Model } = require("sequelize")
+
 module.exports = (sequelize, DataTypes) => {
   class UserFeatures extends Model {
     /**
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       access: {
-        type:DataTypes.ENUM('none', 'read', 'write'),
+        type: DataTypes.ENUM("none", "read", "write"),
         allowNull: false,
       },
       enabled: {

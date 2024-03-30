@@ -1,5 +1,6 @@
 const express = require("express")
 const checkJWTToken = require("../middlewares/auth/checkJWT")
+
 const router = express.Router()
 
 //Services

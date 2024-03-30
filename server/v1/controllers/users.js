@@ -1,6 +1,6 @@
 const Joi = require("joi")
-const { ValidationException } = require("../exceptions/httpsExceptions")
 const bcrypt = require("bcrypt")
+const { ValidationException } = require("../exceptions/httpsExceptions")
 
 //Queries
 const UserQueries = require("../queries/users")
@@ -10,13 +10,13 @@ const UserQueries = require("../queries/users")
  * @apiName UpdateUser
  * @apiGroup User
  * @apiDescription Update currently logged in user
- * 
+ *
  * @apiParam {String} first_name The updated first name of the user.
  * @apiParam {String} last_name The updated last name of the user.
  * @apiParam {String} email The updated email of the user.
  * @apiParam {String} password The new password.
  * @apiParam {String} confirm_password The confirmation of the new password.
- * 
+ *
  * @apiParamExample {json} Request Example:
  * {
  *    "first_name": "Test",
@@ -25,17 +25,17 @@ const UserQueries = require("../queries/users")
  *    "password": "Test@123",
  *    "confirm_password": "Test@123"
  * }
- *   
+ *
  * @apiSuccess {Object} Success message
- * 
+ *
  * @apiSuccessExample {json} Success Response:
  * HTTP/1.1 200 OK
  * {
  *    "success": true,
  * }
- * 
+ *
  * @apiError {Object} error Error object if the update process fails.
- * 
+ *
  * @apiErrorExample {json} Error Response:
  * HTTP/1.1 500 Internal Server Error
  * {

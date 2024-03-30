@@ -1,5 +1,5 @@
-"use strict"
 const { Model } = require("sequelize")
+
 module.exports = (sequelize, DataTypes) => {
   class Features extends Model {
     /**
@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here such as belongsto, has, hasMany and so on
-      Features.hasMany(models.UserFeatures, { foreignKey: "feature_id"});
+      Features.hasMany(models.UserFeatures, { foreignKey: "feature_id" })
     }
   }
   Features.init(
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue:true,
+        defaultValue: true,
       },
     },
     {

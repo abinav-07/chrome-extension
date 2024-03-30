@@ -1,5 +1,3 @@
-"use strict"
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     /**
@@ -25,7 +23,7 @@ module.exports = {
           active: {
             type: Sequelize.DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue:true,
+            defaultValue: true,
           },
           created_at: {
             type: Sequelize.DataTypes.DATE,
@@ -37,7 +35,7 @@ module.exports = {
           },
         },
         { transaction: t },
-      );
+      )
       await queryInterface.createTable(
         "users",
         {
@@ -67,7 +65,7 @@ module.exports = {
             allowNull: false,
           },
           role: {
-            type:Sequelize.DataTypes.ENUM("Admin","User"),
+            type: Sequelize.DataTypes.ENUM("Admin", "User"),
             allowNull: false,
           },
           created_at: {
@@ -80,7 +78,7 @@ module.exports = {
           },
         },
         { transaction: t },
-      );
+      )
 
       await queryInterface.createTable(
         "user_features",
@@ -95,19 +93,19 @@ module.exports = {
             allowNull: false,
             references: {
               model: "users",
-              key: "id"
-            }
+              key: "id",
+            },
           },
           feature_id: {
             type: Sequelize.DataTypes.INTEGER,
             allowNull: false,
             references: {
               model: "features",
-              key: "id"
-            }
+              key: "id",
+            },
           },
           access: {
-            type: Sequelize.DataTypes.ENUM('none', 'read', 'write'),
+            type: Sequelize.DataTypes.ENUM("none", "read", "write"),
             allowNull: false,
           },
           enabled: {
@@ -124,7 +122,7 @@ module.exports = {
           },
         },
         { transaction: t },
-      );
+      )
     })
   },
 
@@ -136,9 +134,9 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     return queryInterface.sequelize.transaction(async (t) => {
-      await queryInterface.dropTable("features", { transaction: t });
-      await queryInterface.dropTable("users", { transaction: t });
-      await queryInterface.dropTable("user_features", { transaction: t });
+      await queryInterface.dropTable("features", { transaction: t })
+      await queryInterface.dropTable("users", { transaction: t })
+      await queryInterface.dropTable("user_features", { transaction: t })
     })
   },
 }

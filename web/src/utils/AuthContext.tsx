@@ -15,13 +15,7 @@ interface AuthProviderProps extends Omit<ContextProps, "authenticated"> {
   children: ReactNode
 }
 
-export const AuthProvider: FC<AuthProviderProps> = ({
-  loading,
-  user,
-  setUser,
-  children,
-  role,
-}) => {
+export const AuthProvider: FC<AuthProviderProps> = ({ loading, user, setUser, children, role }) => {
   return (
     <AuthContext.Provider
       value={{

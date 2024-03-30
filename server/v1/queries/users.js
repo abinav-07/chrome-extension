@@ -1,7 +1,7 @@
 const { Users } = require("../models")
 
 /*
- Create a class named UserQueries which will be used to 
+ Create a class named UserQueries which will be used to
  communicate with the database using sequelize
 */
 class UserQueries {

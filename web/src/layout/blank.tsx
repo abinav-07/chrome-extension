@@ -1,9 +1,5 @@
 const BlankLayout = ({ children }) => {
-    return (
-        <>
-            {children}
-        </>
-    )
+  return <>{children}</>
 }
 
-export default BlankLayout;
+export default BlankLayout

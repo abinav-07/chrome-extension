@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
+
 dotenv.config()
 
 const { UnauthorizedException } = require("../../exceptions/httpsExceptions")
@@ -16,7 +17,7 @@ const checkJWTToken = (req, res, next) => {
       jwtToken = jwtToken.split(" ")[1] //Bearer xa2132
     }
     // Decode the token from the header with the token that we signed in during login/register
-    var decodedToken = jwt.verify(jwtToken, jwtSecretKey)
+    const decodedToken = jwt.verify(jwtToken, jwtSecretKey)
     req.user = decodedToken
     // Call next middleware if all is good
     next()
