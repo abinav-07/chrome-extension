@@ -207,13 +207,11 @@ const update = async (req, res, next) => {
     })
 
     // Only allow pivot table update if user id is in body
-    if(!checkUserFeatures && usersFeaturesPayload?.user_id){
-      throw new ValidationException(null,"User feature not found. Create first!")
+    if (!checkUserFeatures && usersFeaturesPayload?.user_id) {
+      throw new ValidationException(null, "User feature not found. Create first!")
     }
 
-
-    usersFeaturesPayload?.user_id && await UserFeatureQueries.update(usersFeaturesPayload, t)
-
+    usersFeaturesPayload?.user_id && (await UserFeatureQueries.update(usersFeaturesPayload, t))
 
     await t.commit()
     res.status(200).json({

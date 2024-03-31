@@ -46,7 +46,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 }) => {
   let inputNode = <Input />
 
-  if (record?.user_id && (dataIndex == "enabled")) {
+  if (record?.user_id && dataIndex == "enabled") {
     inputNode = (
       <Select placeholder={dataIndex}>
         <Select.Option value={true}>True</Select.Option>
