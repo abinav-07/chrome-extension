@@ -57,9 +57,7 @@ const BasicLayout = ({ type, children }: props) => {
         </Header>
         <NavBar type={type} />
       </Sider>
-      <LayoutContent>
-        {children}
-      </LayoutContent>
+      <LayoutContent>{children}</LayoutContent>
     </Layout>
   )
 }

@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer';
+import { Buffer } from "buffer"
 
 export const parseJwt = () => {
   const token = localStorage.getItem("role-token")

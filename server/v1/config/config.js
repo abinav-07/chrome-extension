@@ -2,7 +2,7 @@ const dotenv = require("dotenv")
 const path = require("path")
 
 // Setting different path for Env, since its inside server folder
-dotenv.config({path: path.resolve(__dirname, '../.env')})
+dotenv.config({ path: path.resolve(__dirname, "../.env") })
 module.exports = {
   development: {
     username: process.env.MY_SQL_USERNAME,
@@ -13,8 +13,8 @@ module.exports = {
     define: {
       timeStamps: true,
       // Dynamic name, sequelize sets it to "createdAt"
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
+      createdAt: "created_at",
+      updatedAt: "updated_at",
     },
     logging: process.env.NODE_ENV === "development", //logs sequelize executions
   },

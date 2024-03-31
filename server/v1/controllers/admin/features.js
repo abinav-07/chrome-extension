@@ -4,9 +4,8 @@ const { ValidationException } = require("../../exceptions/httpsExceptions")
 //Queries
 const FeatureQueries = require("../../queries/features")
 const UserFeatureQueries = require("../../queries/user_features")
-const {  sequelize } = require("../../models")
+const { sequelize } = require("../../models")
 const { Op, QueryTypes } = require("sequelize")
-
 
 /**
  * @api {get} /v1/admin/feature Get All Feature
@@ -37,15 +36,18 @@ const { Op, QueryTypes } = require("sequelize")
  * }
  */
 
-const getAll=async(req,res,next)=>{
-    try{
-        // Get All features with child table data
-        const getAllFeatures=await sequelize.query("SELECT `features`.*,`user_features`.`user_id`,`user_features`.`access`,`user_features`.`enabled`  FROM `features` LEFT JOIN `user_features` ON `user_features`.`feature_id`=`features`.`id`", { type: QueryTypes.SELECT })
+const getAll = async (req, res, next) => {
+  try {
+    // Get All features with child table data
+    const getAllFeatures = await sequelize.query(
+      "SELECT `features`.*,`user_features`.`user_id`,`user_features`.`access`,`user_features`.`enabled`  FROM `features` LEFT JOIN `user_features` ON `user_features`.`feature_id`=`features`.`id`",
+      { type: QueryTypes.SELECT },
+    )
 
-        res.status(200).json(getAllFeatures)
-    }catch(err){
-        next(err)
-    }
+    res.status(200).json(getAllFeatures)
+  } catch (err) {
+    next(err)
+  }
 }
 
 /**
@@ -78,8 +80,8 @@ const getAll=async(req,res,next)=>{
  *    "error": "Error message"
  * }
  */
-const create=async(req,res,next)=>{
-    // get payload
+const create = async (req, res, next) => {
+  // get payload
   const data = req.body
 
   // Joi validations
@@ -89,28 +91,24 @@ const create=async(req,res,next)=>{
   })
 
   const validationResult = schema.validate(data, { abortEarly: false })
-  try{
-
+  try {
     if (validationResult && validationResult.error)
       throw new ValidationException(null, validationResult.error)
 
-
-    const checkDuplicate=await FeatureQueries.getFeature({
-        feature_name:data?.feature_name
+    const checkDuplicate = await FeatureQueries.getFeature({
+      feature_name: data?.feature_name,
     })
-    if(checkDuplicate) throw new ValidationException(null, "Feature name already exists!")
+    if (checkDuplicate) throw new ValidationException(null, "Feature name already exists!")
 
     await FeatureQueries.createFeature(data)
 
     res.status(200).json({
-        success: true,
-      })
-
-  }catch(err){
+      success: true,
+    })
+  } catch (err) {
     next(err)
   }
 }
-
 
 /**
  * @api {patch} /v1/admin/feature/update Update Feature
@@ -148,7 +146,7 @@ const create=async(req,res,next)=>{
  */
 const update = async (req, res, next) => {
   // get payload
-  let t;
+  let t
   const data = req.body
 
   // Joi validations
@@ -157,60 +155,62 @@ const update = async (req, res, next) => {
     active: Joi.boolean().required(),
     user_id: Joi.number().required(),
     feature_id: Joi.number().required(),
-      access: Joi.string().required(),
-      enabled: Joi.boolean().required(),
+    access: Joi.string().required(),
+    enabled: Joi.boolean().required(),
   })
 
   const validationResult = schema.validate(data, { abortEarly: false })
 
   try {
     // First, we start a transaction from your connection and save it into a variable
-    t=await sequelize.transaction();
-
+    t = await sequelize.transaction()
 
     if (validationResult && validationResult.error)
       throw new ValidationException(null, validationResult.error)
 
     // Required Payloads
-    const featuresPayload={
-        feature_name:data?.feature_name,
-        active:data?.active,
+    const featuresPayload = {
+      feature_name: data?.feature_name,
+      active: data?.active,
     }
 
-    const usersFeaturesPayload={
-        user_id:data?.user_id,
-        feature_id:data?.feature_id,
-        access:data?.access,
-        enabled:data?.enabled,
+    const usersFeaturesPayload = {
+      user_id: data?.user_id,
+      feature_id: data?.feature_id,
+      access: data?.access,
+      enabled: data?.enabled,
     }
 
-        // Check if features exists in our DB
-        const checkFeatures = await FeatureQueries.getFeature({ id: data?.feature_id })
+    // Check if features exists in our DB
+    const checkFeatures = await FeatureQueries.getFeature({ id: data?.feature_id })
 
-        if (!checkFeatures) throw new ValidationException(null, "Feature not found!")
+    if (!checkFeatures) throw new ValidationException(null, "Feature not found!")
 
-        // Check if features name already exists in our DB
-        const checkDuplicate = await FeatureQueries.getFeature(
-            { id: {
-            [Op.ne]:data?.feature_id
-            },
-            feature_name:data?.feature_name
-        })
+    // Check if features name already exists in our DB
+    const checkDuplicate = await FeatureQueries.getFeature({
+      id: {
+        [Op.ne]: data?.feature_id,
+      },
+      feature_name: data?.feature_name,
+    })
 
-        if (checkDuplicate) throw new ValidationException(null, "Duplicate feature name found!")
+    if (checkDuplicate) throw new ValidationException(null, "Duplicate feature name found!")
 
-        // Update Features
-        await FeatureQueries.updateFeature(data?.feature_id,featuresPayload,t)
-    
-        // Update Create UserFeatures
-        // Check if userFeatures exists in our DB and upsert
-        const checkUserFeatures = await UserFeatureQueries.getOne({ feature_id: data?.feature_id,user_id: data?.user_id })
+    // Update Features
+    await FeatureQueries.updateFeature(data?.feature_id, featuresPayload, t)
 
-        if(!checkUserFeatures){
-            await UserFeatureQueries.create(usersFeaturesPayload,t)
-        } else{
-            await UserFeatureQueries.update(usersFeaturesPayload,t)
-        }
+    // Update Create UserFeatures
+    // Check if userFeatures exists in our DB and upsert
+    const checkUserFeatures = await UserFeatureQueries.getOne({
+      feature_id: data?.feature_id,
+      user_id: data?.user_id,
+    })
+
+    if (!checkUserFeatures) {
+      await UserFeatureQueries.create(usersFeaturesPayload, t)
+    } else {
+      await UserFeatureQueries.update(usersFeaturesPayload, t)
+    }
 
     await t.commit()
     res.status(200).json({
@@ -231,7 +231,7 @@ const update = async (req, res, next) => {
  * @apiParam {number} feature_id feature id
  * @apiParam {string} access Access status of features
  * @apiParam {number} user_id User id
- * @apiParam {boolean} enabled enabled status 
+ * @apiParam {boolean} enabled enabled status
  *
  * @apiParamExample {json} Request Example:
  * {
@@ -254,8 +254,8 @@ const update = async (req, res, next) => {
  *    "error": "Error message"
  * }
  */
-const createUserfeatures=async(req,res,next)=>{
-    // get payload
+const createUserfeatures = async (req, res, next) => {
+  // get payload
   const data = req.body
 
   // Joi validations
@@ -267,29 +267,25 @@ const createUserfeatures=async(req,res,next)=>{
   })
 
   const validationResult = schema.validate(data, { abortEarly: false })
-  try{
-
+  try {
     if (validationResult && validationResult.error)
       throw new ValidationException(null, validationResult.error)
 
-
-    const checkDuplicate=await UserFeatureQueries.getOne({
-        feature_id:data?.feature_id,
-        user_id:data?.user_id,
+    const checkDuplicate = await UserFeatureQueries.getOne({
+      feature_id: data?.feature_id,
+      user_id: data?.user_id,
     })
-    if(checkDuplicate) throw new ValidationException(null, "User Feature already exists!")
+    if (checkDuplicate) throw new ValidationException(null, "User Feature already exists!")
 
     await UserFeatureQueries.create(data)
 
     res.status(200).json({
-        success: true,
-      })
-
-  }catch(err){
+      success: true,
+    })
+  } catch (err) {
     next(err)
   }
 }
-
 
 /**
  * @api {delete} /v1/admin/feature/:feature_id/delete Delete Feature
@@ -298,7 +294,7 @@ const createUserfeatures=async(req,res,next)=>{
  * @apiDescription Delete Features and its child datas
  *
  * @apiParam {number} feature_id Feature id
- * 
+ *
  * @apiSuccess {Object} Returns the JSON object representing the success message.
  *
  * @apiSuccessExample {json} Success Response:
@@ -316,23 +312,21 @@ const createUserfeatures=async(req,res,next)=>{
  *     }
  */
 const deleteOne = async (req, res, next) => {
-// get payload
-const data = req.params
-let t
-    try {
+  // get payload
+  const data = req.params
+  let t
+  try {
+    // First, we start a transaction from your connection and save it into a variable
+    t = await sequelize.transaction()
 
-        // First, we start a transaction from your connection and save it into a variable
-   t = await sequelize.transaction();
-    
-            // Check if features exists in our DB
-            const checkFeatures = await FeatureQueries.getFeature({ id: data?.feature_id })
+    // Check if features exists in our DB
+    const checkFeatures = await FeatureQueries.getFeature({ id: data?.feature_id })
 
-            if (!checkFeatures) throw new ValidationException(null, "Feature not found!")
+    if (!checkFeatures) throw new ValidationException(null, "Feature not found!")
 
-
-            // Delete User Features
-            await UserFeatureQueries.delete(data?.feature_id)
-            await FeatureQueries.delete(data?.feature_id)
+    // Delete User Features
+    await UserFeatureQueries.delete(data?.feature_id)
+    await FeatureQueries.delete(data?.feature_id)
 
     const payload = {
       success: true,
@@ -348,8 +342,8 @@ let t
 }
 
 module.exports = {
-    create,
-    getAll,
+  create,
+  getAll,
   update,
   createUserfeatures,
   deleteOne,

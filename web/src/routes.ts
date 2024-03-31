@@ -32,7 +32,7 @@ const PageRoutes = [
     privateRoute: true,
     adminRoute: false,
     layout: BasicLayout,
-    component: UserFeatures
+    component: UserFeatures,
   },
   {
     name: "Feature",
@@ -40,7 +40,7 @@ const PageRoutes = [
     privateRoute: true,
     adminRoute: false,
     layout: BasicLayout,
-    component: UserFeature
+    component: UserFeature,
   },
 
   // Admin Pages
@@ -50,7 +50,7 @@ const PageRoutes = [
     privateRoute: false,
     adminRoute: false,
     layout: BlankLayout,
-    component: LoginAdminPage
+    component: LoginAdminPage,
   },
   {
     name: "Admin Features Page",
@@ -58,7 +58,7 @@ const PageRoutes = [
     privateRoute: true,
     adminRoute: true,
     layout: BasicLayout,
-    component: FeatureList
+    component: FeatureList,
   },
 ]
 

@@ -4,12 +4,11 @@ const dotenv = require("dotenv")
 const chalk = require("chalk")
 const path = require("path")
 
-dotenv.config({path: path.resolve(__dirname, './.env')})
+dotenv.config({ path: path.resolve(__dirname, "./.env") })
 
 //  Services
 const { NotFoundException } = require("./exceptions/httpsExceptions")
 const errorHandler = require("./middlewares/errorHandler")
-
 
 //Initialize With Express
 const app = express()

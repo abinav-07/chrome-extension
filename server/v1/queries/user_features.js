@@ -9,7 +9,7 @@ class UserFeaturesQueries {
     return UserFeatures
   }
 
-  async getAll(query){
+  async getAll(query) {
     return await this.table().findAll(query)
   }
 
@@ -24,32 +24,32 @@ class UserFeaturesQueries {
     return await this.table().findOne(query)
   }
 
-  // Create new 
-  async create(userFeatures,transaction=null) {
-    return await this.table().create({...userFeatures},{transaction})
+  // Create new
+  async create(userFeatures, transaction = null) {
+    return await this.table().create({ ...userFeatures }, { transaction })
   }
 
   // update using id and values
-  async update(values,transaction=null) {
+  async update(values, transaction = null) {
     return await this.table().update(
       { ...values },
       {
         where: {
-          feature_id:values?.feature_id,
-          user_id:values?.user_id,
+          feature_id: values?.feature_id,
+          user_id: values?.user_id,
         },
-        transaction
+        transaction,
       },
     )
   }
 
   // delete using id
-  async delete(id,transaction=null) {
+  async delete(id, transaction = null) {
     return await this.table().destroy({
       where: {
         id,
       },
-      transaction
+      transaction,
     })
   }
 }

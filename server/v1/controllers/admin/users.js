@@ -34,16 +34,14 @@ const UserQueries = require("../../queries/users")
  * }
  */
 
-const getAll=async(req,res,next)=>{
-  try{
-      // Get All features with child table data
-      const getAll=await UserQueries.getAll(
-          {include:{all:true,separate: true,}}
-      )
+const getAll = async (req, res, next) => {
+  try {
+    // Get All features with child table data
+    const getAll = await UserQueries.getAll({ include: { all: true, separate: true } })
 
-      res.status(200).json(getAll)
-  }catch(err){
-      next(err)
+    res.status(200).json(getAll)
+  } catch (err) {
+    next(err)
   }
 }
 

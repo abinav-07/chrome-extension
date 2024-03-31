@@ -1,5 +1,5 @@
 const express = require("express")
-const {checkAdmin,checkJWTToken} = require("../middlewares/auth/checkJWT")
+const { checkAdmin, checkJWTToken } = require("../middlewares/auth/checkJWT")
 
 const router = express.Router()
 
@@ -7,7 +7,7 @@ const router = express.Router()
 const UserServices = require("../controllers/admin/users")
 const FeatureServices = require("../controllers/admin/features")
 
-router.use(checkJWTToken,checkAdmin)
+router.use(checkJWTToken, checkAdmin)
 
 // User Routes
 router.get("/members", UserServices.getAll)

@@ -40,12 +40,14 @@ const NavBar = ({ type }: props) => {
               <Link to={path}>{label}</Link>
             </NavBarMenuItem>
           ))}
-        <Menu.Item key="Logout" icon={<LogoutOutlined />} onClick={() => {
-          logout()
-        }}>
-          <LogoutButton>
-            Log Out
-          </LogoutButton>
+        <Menu.Item
+          key="Logout"
+          icon={<LogoutOutlined />}
+          onClick={() => {
+            logout()
+          }}
+        >
+          <LogoutButton>Log Out</LogoutButton>
         </Menu.Item>
       </Menu>
     </NavBarDiv>

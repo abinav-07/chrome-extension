@@ -7,7 +7,6 @@ import { AuthContext, parseJwt } from "../../utils"
 import { useMutation } from "react-query"
 import { createUser } from "../../services/users"
 
-
 const RegisterUserPage = () => {
   const history = useNavigate()
 
@@ -15,7 +14,6 @@ const RegisterUserPage = () => {
 
   const { mutate, isLoading: createLoading } = useMutation(createUser, {
     onSuccess: ({ data }: any) => {
-
       localStorage.setItem("role-token", data?.token)
       // Set Auth Context USer
       setUser(parseJwt())
@@ -24,11 +22,10 @@ const RegisterUserPage = () => {
     onError: (err: any) => {
       message.open({
         type: "error",
-        content: err?.response?.data?.message || "Error while registering User"
+        content: err?.response?.data?.message || "Error while registering User",
       })
-    }
+    },
   })
-
 
   const onSubmit = (values) => {
     const formValues = {
@@ -40,7 +37,6 @@ const RegisterUserPage = () => {
     }
 
     mutate(formValues)
-
   }
 
   //Redirect to Landing if already Logged In

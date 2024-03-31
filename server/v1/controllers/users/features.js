@@ -29,27 +29,26 @@ const { ValidationException } = require("../../exceptions/httpsExceptions")
  *    "error": "Error message"
  * }
  */
-const getAll=async(req,res,next)=>{
-    try{
-        const {user}=req
-        
-        // Get All features with child table data
-        const getAllFeatures=await UserFeatureQueries.getAll({
-            where:{
-                user_id:user?.id,
-                // Nested where clause, only get active features for users
-                ['$features.active$']: true
-            },
-            include:{all:true}
-            
-        })
+const getAll = async (req, res, next) => {
+  try {
+    const { user } = req
 
-        res.status(200).json(getAllFeatures)
-    }catch(err){
-        next(err)
-    }
+    // Get All features with child table data
+    const getAllFeatures = await UserFeatureQueries.getAll({
+      where: {
+        user_id: user?.id,
+        // Nested where clause, only get active features for users
+        ["$features.active$"]: true,
+      },
+      include: { all: true },
+    })
+
+    res.status(200).json(getAllFeatures)
+  } catch (err) {
+    next(err)
+  }
 }
 
-module.exports={
-    getAll
+module.exports = {
+  getAll,
 }

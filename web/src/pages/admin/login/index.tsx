@@ -7,7 +7,6 @@ import { AuthContext, parseJwt } from "../../../utils"
 import { useMutation } from "react-query"
 import { loginUser } from "../../../services"
 
-
 const LoginAdminPage = () => {
   const navigate = useNavigate()
   const { setUser } = useContext(AuthContext)
@@ -24,12 +23,10 @@ const LoginAdminPage = () => {
     onError: (err: any) => {
       message.open({
         type: "error",
-        content: err?.response?.data?.message || "Error while logging in User"
+        content: err?.response?.data?.message || "Error while logging in User",
       })
-    }
+    },
   })
-
-
 
   const onSubmit = (values) => {
     mutate(values)

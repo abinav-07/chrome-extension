@@ -23,11 +23,10 @@ const LoginUserPage = () => {
     onError: (err: any) => {
       message.open({
         type: "error",
-        content: err?.response?.data?.message || "Error while logging in User"
+        content: err?.response?.data?.message || "Error while logging in User",
       })
-    }
+    },
   })
-
 
   const onSubmit = (values) => {
     mutate(values)

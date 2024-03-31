@@ -9,7 +9,7 @@ class FeatureQueries {
     return Features
   }
 
-  async getAll(query){
+  async getAll(query) {
     return await this.table().findAll(query)
   }
 
@@ -25,31 +25,30 @@ class FeatureQueries {
   }
 
   // Create new feature
-  async createFeature(featureData,transaction=null) {
-    return await this.table().create({...featureData},{transaction})
+  async createFeature(featureData, transaction = null) {
+    return await this.table().create({ ...featureData }, { transaction })
   }
 
   // update feature using id and values
-  async updateFeature(id, values,transaction=null) {
-    
+  async updateFeature(id, values, transaction = null) {
     return await this.table().update(
       { ...values },
       {
         where: {
           id,
         },
-        transaction
+        transaction,
       },
     )
   }
 
   // delete feature using id
-  async delete(id,transaction) {
+  async delete(id, transaction) {
     return await this.table().destroy({
       where: {
         id,
       },
-      transaction
+      transaction,
     })
   }
 }

@@ -46,7 +46,6 @@ const App = () => {
 
       return
     } catch (error) {
-
       setUser(null)
       message.error("Unauthorized User")
     } finally {
@@ -112,14 +111,23 @@ const App = () => {
                 }
               },
             )}
-            <Route path="*" element={
-              <BasicLayout type="User">
-                <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center" }}>Page Not Found!</div>
-              </BasicLayout>
-
-            }>
-
-            </Route>
+            <Route
+              path="*"
+              element={
+                <BasicLayout type="User">
+                  <div
+                    style={{
+                      display: "flex",
+                      height: "100vh",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    Page Not Found!
+                  </div>
+                </BasicLayout>
+              }
+            ></Route>
           </Routes>
         </Router>
       </AuthProvider>
