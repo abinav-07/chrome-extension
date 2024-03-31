@@ -1,7 +1,5 @@
 import axios from "axios"
 
-console.log(process.env)
-
 const API = axios.create({
   baseURL: process.env.REACT_APP_API,
   responseType: "json",

@@ -28,8 +28,8 @@ app.use((req, res, next) => {
 })
 
 //Routes
-app.use("/", require("./routes/users"))
-app.use("/admin", require("./routes/admin"))
+app.use("/v1/", require("./routes/users"))
+app.use("/v1/admin", require("./routes/admin"))
 
 //Error Handler
 app.use((req, res, next) =>

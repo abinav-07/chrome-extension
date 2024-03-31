@@ -114,18 +114,19 @@ const App = () => {
             <Route
               path="*"
               element={
-                <BasicLayout type="User">
-                  <div
-                    style={{
-                      display: "flex",
-                      height: "100vh",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    Page Not Found!
-                  </div>
-                </BasicLayout>
+                user?.role ? (
+                  <BasicLayout type="User">
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "100vh",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      Page Not Found!
+                    </div>
+                  </BasicLayout>) : (<PrivateRouter />)
               }
             ></Route>
           </Routes>

@@ -6,6 +6,8 @@ Role based App for users using Node/Express.js and React.js, Sequelize and Jwts
 
 #### Admin Cred: admin@gmail.com admin
 
+`NOTE: Use separate browsers for admin and user pages as I have its a mock project, both authenticated users have token ids assigned to same storage key.`
+
 This section covers the process for configuring and installing the application packages.
 
 - run `npm run doc` to generate a jsdoc, after generating, go to /server/v1/documentation/api directory and open index.html file.
@@ -13,7 +15,7 @@ This section covers the process for configuring and installing the application p
 1. Install `Node.js` in your system.
 2. In your terminal, run `npm init -y` && `npm i` to install all the packages.
 4. Use `DBeaver` or `MySQL Workbench` for easy database usage.
-5. Add `.env` to your `server/v1` folder, It has exampleenv file, you can copy same values to .env.
+5. Add `.env` to your `server/v1` folder, It has exampleenv file, you can copy same values to .env., also add env inside web folder with value `REACT_APP_API=http://localhost:5000/v1` to connect to API
 6. Start SQL in your local machine
 7. create a database named `role_based_app` in your local mysql
 8. run `npx sequelize-cli db:migrate` in your `server/v1` folder's terminal to migrate the database
