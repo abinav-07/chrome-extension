@@ -5,6 +5,7 @@ import { message } from "antd"
 import { Navigate, Routes, Route, BrowserRouter as Router } from "react-router-dom"
 import { Roles } from "./utils/constants"
 import PageRoutes from "./routes"
+import BasicLayout from "./layout/layout"
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,7 +20,7 @@ const PrivateRouter = () => {
     message.info({
       content: "You must login to view this page!",
     })
-  })
+  }, [])
 
   return <Navigate to={"/login"} />
 }
@@ -29,19 +30,23 @@ const AdminPrivateRouter = () => {
     message.info({
       content: "You must be admin to view this page!",
     })
-  })
+  }, [])
   return <Navigate to="/admin/login" />
 }
 
 const App = () => {
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(parseJwt())
 
   const initialLoad = useCallback(() => {
     try {
-      setUser(parseJwt())
+      const parsedUser = parseJwt()
+
+      setUser(parsedUser)
+
       return
     } catch (error) {
+
       setUser(null)
       message.error("Unauthorized User")
     } finally {
@@ -66,12 +71,12 @@ const App = () => {
                       key={`${path}_${i}`}
                       path={path}
                       element={
-                        !!user?.role ? (
-                          <PrivateRouter />
-                        ) : (
-                          <Layout>
+                        user?.role ? (
+                          <Layout type="user">
                             <Component />
                           </Layout>
+                        ) : (
+                          <PrivateRouter />
                         )
                       }
                     />
@@ -85,7 +90,7 @@ const App = () => {
                         user?.role !== "admin" ? (
                           <AdminPrivateRouter />
                         ) : (
-                          <Layout>
+                          <Layout type="admin">
                             <Component />
                           </Layout>
                         )
@@ -98,7 +103,7 @@ const App = () => {
                       key={`${path}_${i}`}
                       path={path}
                       element={
-                        <Layout>
+                        <Layout type="user">
                           <Component />
                         </Layout>
                       }
@@ -107,9 +112,14 @@ const App = () => {
                 }
               },
             )}
-            {/* <Route path="*">
-            <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center" }}>Page Not Found!</div>
-          </Route> */}
+            <Route path="*" element={
+              <BasicLayout type="user">
+                <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center" }}>Page Not Found!</div>
+              </BasicLayout>
+
+            }>
+
+            </Route>
           </Routes>
         </Router>
       </AuthProvider>

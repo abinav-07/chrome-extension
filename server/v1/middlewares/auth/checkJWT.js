@@ -4,21 +4,34 @@ const dotenv = require("dotenv")
 dotenv.config()
 
 const { UnauthorizedException } = require("../../exceptions/httpsExceptions")
+const UserQueries = require("../../queries/users")
 
 //Secret Key
 const jwtSecretKey = `${process.env.JWT_SECRET_KEY}`
 
 // Middleware
-const checkJWTToken = (req, res, next) => {
+const checkJWTToken = async(req, res, next) => {
   try {
     // Get token from headers
     let jwtToken = req.headers.authorization
+    
     if (jwtToken.startsWith("Bearer")) {
       jwtToken = jwtToken.split(" ")[1] //Bearer xa2132
     }
+    
     // Decode the token from the header with the token that we signed in during login/register
     const decodedToken = jwt.verify(jwtToken, jwtSecretKey)
-    req.user = decodedToken
+
+
+    const checkUser=await UserQueries.getUser({id:decodedToken?.user_id})
+
+
+
+    if (!checkUser){
+      throw new UnauthorizedException(null,"Unauthorized User")
+    }
+
+    req.user = checkUser
     // Call next middleware if all is good
     next()
   } catch (err) {
@@ -27,4 +40,20 @@ const checkJWTToken = (req, res, next) => {
   }
 }
 
-module.exports = checkJWTToken
+const checkAdmin = (req, res, next) => {
+try{
+  const user=req.user
+  if(user.role!="admin"){
+    throw new UnauthorizedException(null,"Unauthorized User")
+  }
+  next()
+}catch(err){
+  // Throw err
+  next(new UnauthorizedException(null, "Invalid Admin"))
+}
+}
+
+module.exports = {
+  checkJWTToken,
+  checkAdmin
+}

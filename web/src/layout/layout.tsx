@@ -6,7 +6,7 @@ import NavBar from "../components/common/nav"
 
 interface props {
   type: "admin" | "user"
-  children: any
+  children?: any
 }
 
 const { Content, Sider, Header } = Layout
@@ -57,7 +57,9 @@ const BasicLayout = ({ type, children }: props) => {
         </Header>
         <NavBar type={type} />
       </Sider>
-      <LayoutContent>{children}</LayoutContent>
+      <LayoutContent>
+        {children}
+      </LayoutContent>
     </Layout>
   )
 }

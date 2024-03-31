@@ -9,11 +9,16 @@ class UserQueries {
     return Users
   }
 
+  async getAll(query){
+    return await this.table().findAll(query)
+  }
+
+
   // Get User using id or any fitler
   async getUser(filter = null) {
     const query = {
       raw: true,
-      attributes: ["id", "first_name", "last_name", "email", "password"],
+      attributes: ["id", "first_name", "last_name", "email", "password","role"],
     }
 
     if (filter) query.where = filter

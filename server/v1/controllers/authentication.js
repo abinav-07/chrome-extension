@@ -80,6 +80,9 @@ const registerUser = async (req, res, next) => {
     const hashedPassword = bcrypt.hashSync(data.password, 10)
     data.password = hashedPassword
 
+    // Adding role for the user manually
+    data.role="user"
+
     //Remove Confirmed Password from body data
     delete data.confirm_password
 
@@ -95,6 +98,7 @@ const registerUser = async (req, res, next) => {
       first_name: registerResponse.first_name,
       last_name: registerResponse.last_name,
       email: registerResponse.email,
+      role:registerResponse.role,
     }
 
     // Auth sign in
@@ -169,6 +173,7 @@ const loginUser = async (req, res, next) => {
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
+      role:user.role
     }
 
     // Auth sign in

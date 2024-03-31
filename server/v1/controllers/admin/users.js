@@ -1,14 +1,56 @@
 const Joi = require("joi")
 const bcrypt = require("bcrypt")
-const { ValidationException } = require("../exceptions/httpsExceptions")
+const { ValidationException } = require("../../exceptions/httpsExceptions")
 
 //Queries
-const UserQueries = require("../queries/users")
+const UserQueries = require("../../queries/users")
+
+/**
+ * @api {get} /v1/admin/members Get Feature
+ * @apiName GetAll
+ * @apiGroup Admin Users
+ * @apiDescription Get All users with child table
+ *
+ *
+ * @apiParamExample {json} Request Example:
+ * {
+ *    "members": MembersPayload
+ * }
+ *
+ * @apiSuccess {Object} Success message
+ *
+ * @apiSuccessExample {json} Success Response:
+ * HTTP/1.1 200 OK
+ * {
+ *    "members": MembersPayload
+ * }
+ *
+ * @apiError {Object} error Error object if the update process fails.
+ *
+ * @apiErrorExample {json} Error Response:
+ * HTTP/1.1 500 Internal Server Error
+ * {
+ *    "error": "Error message"
+ * }
+ */
+
+const getAll=async(req,res,next)=>{
+  try{
+      // Get All features with child table data
+      const getAll=await UserQueries.getAll(
+          {include:{all:true,separate: true,}}
+      )
+
+      res.status(200).json(getAll)
+  }catch(err){
+      next(err)
+  }
+}
 
 /**
  * @api {patch} /v1/user/update Update User
  * @apiName UpdateUser
- * @apiGroup User
+ * @apiGroup Admin Users
  * @apiDescription Update currently logged in user
  *
  * @apiParam {String} first_name The updated first name of the user.
@@ -104,9 +146,9 @@ const update = async (req, res, next) => {
 }
 
 /**
- * @api {delete} /v1/user/delete Delete User
+ * @api {delete} /v1/admin/user/delete Delete User
  * @apiName DeleteUser
- * @apiGroup User
+ * @apiGroup Admin Users
  * @apiDescription Delete currently logged in user
  *
  * @apiSuccess {Object} Returns the JSON object representing the success message.
@@ -149,6 +191,7 @@ const deleteOne = async (req, res, next) => {
 }
 
 module.exports = {
+  getAll,
   update,
   deleteOne,
 }

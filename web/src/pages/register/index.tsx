@@ -1,21 +1,46 @@
-import React, { useEffect } from "react"
+import React, { useContext, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import Layout, { Header, Content } from "antd/lib/layout/layout"
-import { Row, Col, Form, Input, Button } from "antd"
+import { Row, Col, Form, Input, Button, message } from "antd"
 import { LeftOutlined, EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons"
-import { parseJwt } from "../../utils"
+import { AuthContext, parseJwt } from "../../utils"
+import { useMutation } from "react-query"
+import { createUser } from "../../services/users"
+
 
 const RegisterUserPage = () => {
   const history = useNavigate()
 
+  const { setUser } = useContext(AuthContext)
+
+  const { mutate, isLoading: createLoading } = useMutation(createUser, {
+    onSuccess: ({ data }: any) => {
+
+      localStorage.setItem("role-token", data?.token)
+      // Set Auth Context USer
+      setUser(parseJwt())
+      history("/features")
+    },
+    onError: (err: any) => {
+      message.open({
+        type: "error",
+        content: err?.response?.data?.message || "Error while registering User"
+      })
+    }
+  })
+
+
   const onSubmit = (values) => {
     const formValues = {
-      firstName: values.firstName,
-      lastName: values.lastName,
+      first_name: values.firstName,
+      last_name: values.lastName,
       email: values.registerEmail,
       password: values.registerPassword,
       confirm_password: values.registerConfirmPassword,
     }
+
+    mutate(formValues)
+
   }
 
   //Redirect to Landing if already Logged In
@@ -57,13 +82,6 @@ const RegisterUserPage = () => {
             <Row>
               <h2>Sign Up</h2>
             </Row>
-            {/* {registerErrorMsg && (
-                            <Alert
-                                message={registerErrorMsg}
-                                type="error"
-                                closable
-                            />
-                        )} */}
             <Row
               gutter={24}
               style={{
@@ -131,7 +149,7 @@ const RegisterUserPage = () => {
                       type="primary"
                       htmlType="submit"
                       style={{ width: "50%" }}
-                      // loading={registeringUser}
+                      loading={createLoading}
                     >
                       Sign Up
                     </Button>

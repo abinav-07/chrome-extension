@@ -1,7 +1,9 @@
 import axios from "axios"
 
+console.log(process.env)
+
 const API = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_APP_API_URL,
+  baseURL: process.env.REACT_APP_API,
   responseType: "json",
 })
 
@@ -18,3 +20,5 @@ API.interceptors.request.use(
     return Promise.reject(error)
   },
 )
+
+export { API }
