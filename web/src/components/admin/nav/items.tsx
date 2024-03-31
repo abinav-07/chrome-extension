@@ -1,4 +1,4 @@
-import { AndroidOutlined } from "@ant-design/icons"
+import { AndroidOutlined, UserOutlined } from "@ant-design/icons"
 
 export const NavbarItems = [
   {
@@ -7,5 +7,12 @@ export const NavbarItems = [
     label: "Features",
     path: `/admin/features`,
     icon: <AndroidOutlined />,
+  },
+  {
+    name: "Members",
+    key: "members",
+    label: "Members",
+    path: `/admin/members`,
+    icon: <UserOutlined />,
   },
 ]

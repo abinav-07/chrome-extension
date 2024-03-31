@@ -4,6 +4,7 @@ const { ValidationException } = require("../../exceptions/httpsExceptions")
 
 //Queries
 const UserQueries = require("../../queries/users")
+const { Op } = require("sequelize")
 
 /**
  * @api {get} /v1/admin/members Get All Users
@@ -46,24 +47,21 @@ const getAll = async (req, res, next) => {
 }
 
 /**
- * @api {patch} /v1/user/update Update User
+ * @api {patch} /v1/admin/member/update Update User
  * @apiName UpdateUser
  * @apiGroup Admin Users
- * @apiDescription Update currently logged in user
+ * @apiDescription Update user
  *
  * @apiParam {String} first_name The updated first name of the user.
  * @apiParam {String} last_name The updated last name of the user.
  * @apiParam {String} email The updated email of the user.
- * @apiParam {String} password The new password.
- * @apiParam {String} confirm_password The confirmation of the new password.
+ * @apiParam {String} role Role type
  *
  * @apiParamExample {json} Request Example:
  * {
  *    "first_name": "Test",
  *    "last_name": "Me",
  *    "email": "test@mailinator.com",
- *    "password": "Test@123",
- *    "confirm_password": "Test@123"
  * }
  *
  * @apiSuccess {Object} Success message
@@ -88,52 +86,33 @@ const update = async (req, res, next) => {
 
   // Joi validations
   const schema = Joi.object({
-    first_name: Joi.string().required(),
-    last_name: Joi.string().required(),
+    first_name: Joi.string().optional(),
+    last_name: Joi.string().optional(),
     email: Joi.string().required().email(),
-    password: Joi.string()
-      .required()
-      .pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,20})"))
-      .messages({
-        "string.pattern.base": "Password must contain alphabets and numbers",
-        "string.required": "Password is required",
-      }),
-    confirm_password: Joi.string().equal(Joi.ref("password")).required().messages({
-      "any.only": "Passwords do not match",
-      "string.required": "Confirm Password is required",
-    }),
+    role:Joi.string().optional(),
   })
 
   const validationResult = schema.validate(data, { abortEarly: false })
 
   try {
-    // Get autheticated user from our req payload, set in JWT
-    const { user_id } = req.user
 
     if (validationResult && validationResult.error)
       throw new ValidationException(null, validationResult.error)
 
     // Check if user exists in our DB
-    const checkUser = await UserQueries.getUser({ id: user_id })
+    const checkUser = await UserQueries.getUser({ email: data?.email })
 
     if (!checkUser) throw new ValidationException(null, "User not found!")
 
     // Check if email already exists
-    const user = await UserQueries.getUser({ email: data.email })
+    const user = await UserQueries.getUser({ email: data.email,id:{[Op.ne]:checkUser?.id} })
 
     // Check if email already exists
     if (user && user.email && checkUser.email !== data.email)
       throw new ValidationException(null, "Email Already Exists!")
 
-    //Hash Password
-    const hashedPassword = bcrypt.hashSync(data.password, 10)
-    data.password = hashedPassword
-
-    //Remove Confirmed Password from body data
-    delete data.confirm_password
-
     // Update user
-    await UserQueries.updateUser(user_id, data)
+    await UserQueries.updateUser(checkUser?.id, data)
 
     res.status(200).json({
       success: true,
@@ -144,7 +123,7 @@ const update = async (req, res, next) => {
 }
 
 /**
- * @api {delete} /v1/admin/user/delete Delete User
+ * @api {delete} /v1/admin/member/delete Delete User
  * @apiName DeleteUser
  * @apiGroup Admin Users
  * @apiDescription Delete currently logged in user

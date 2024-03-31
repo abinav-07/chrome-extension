@@ -4,7 +4,6 @@ import {
   Col,
   Form,
   Input,
-  InputNumber,
   Layout,
   Modal,
   Popconfirm,

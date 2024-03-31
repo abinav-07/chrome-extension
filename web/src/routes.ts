@@ -3,6 +3,7 @@ import BasicLayout from "./layout/layout"
 import FeatureList from "./pages/admin/features"
 
 import LoginAdminPage from "./pages/admin/login"
+import MemberList from "./pages/admin/members"
 import UserFeatures from "./pages/features"
 import UserFeature from "./pages/features/[id]"
 import LoginUserPage from "./pages/login"
@@ -59,6 +60,14 @@ const PageRoutes = [
     adminRoute: true,
     layout: BasicLayout,
     component: FeatureList,
+  },
+  {
+    name: "Admin Members Page",
+    path: "/admin/members",
+    privateRoute: true,
+    adminRoute: true,
+    layout: BasicLayout,
+    component: MemberList,
   },
 ]
 
