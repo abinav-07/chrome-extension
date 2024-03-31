@@ -44,11 +44,9 @@ class UserFeaturesQueries {
   }
 
   // delete using id
-  async delete(id, transaction = null) {
+  async delete(query, transaction = null) {
     return await this.table().destroy({
-      where: {
-        id,
-      },
+      ...query,
       transaction,
     })
   }

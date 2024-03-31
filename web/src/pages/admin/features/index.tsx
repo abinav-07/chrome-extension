@@ -46,36 +46,25 @@ const EditableCell: React.FC<EditableCellProps> = ({
 }) => {
   let inputNode = <Input />
 
-  const {
-    data: usersData,
-    isLoading,
-    isFetching,
-  } = useQuery(["users"], () => fetchUsers(), {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-    enabled: true,
-    cacheTime: 0,
-
-    select: ({ data }) => {
-      return {
-        data: data?.map((values, i) => ({
-          ...values,
-          key: i,
-        })),
-      }
-    },
-  })
-
-  if (dataIndex == "active" || dataIndex == "enabled") {
+  if (record?.user_id && (dataIndex == "enabled")) {
     inputNode = (
-      <Select placeholder={dataIndex} loading={isLoading || isFetching}>
+      <Select placeholder={dataIndex}>
         <Select.Option value={true}>True</Select.Option>
         <Select.Option value={false}>False</Select.Option>
       </Select>
     )
   }
 
-  if (dataIndex == "access") {
+  if (dataIndex == "active") {
+    inputNode = (
+      <Select placeholder={dataIndex}>
+        <Select.Option value={true}>True</Select.Option>
+        <Select.Option value={false}>False</Select.Option>
+      </Select>
+    )
+  }
+
+  if (record?.user_id && dataIndex == "access") {
     inputNode = (
       <Select placeholder={dataIndex}>
         <Select.Option value={"none"}>None</Select.Option>
@@ -85,14 +74,9 @@ const EditableCell: React.FC<EditableCellProps> = ({
     )
   }
 
-  if (dataIndex == "user_id") {
-    inputNode = (
-      <Select placeholder={dataIndex}>
-        {usersData?.data?.map((user) => (
-          <Select.Option value={user?.id}>{user?.first_name}</Select.Option>
-        ))}
-      </Select>
-    )
+  // Dont allow edit for access and enabled if there is no user id
+  if (!record?.user_id && (dataIndex == "access" || dataIndex == "enabled")) {
+    editing = false
   }
 
   return (
@@ -237,14 +221,18 @@ const FeatureList: React.FC = () => {
   }
 
   const save = async (key: React.Key) => {
-    await form.validateFields()
-    const formValues = form.getFieldsValue()
+    try {
+      await form.validateFields()
+      const formValues = form.getFieldsValue()
 
-    const newData = [...featuresData?.data]
-    const index = newData.findIndex((item) => key === item.key)
-    const item = newData[index]
+      const newData = [...featuresData?.data]
+      const index = newData.findIndex((item) => key === item.key)
+      const item = newData[index]
 
-    updateFeature({ ...formValues, feature_id: item?.id })
+      updateFeature({ ...formValues, feature_id: item?.id, user_id: item?.user_id })
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const columns = [
@@ -263,7 +251,9 @@ const FeatureList: React.FC = () => {
       title: "User",
       dataIndex: "user_id",
       width: "15%",
-      editable: true,
+      render: (_, record: any) => {
+        return record?.user_name
+      },
     },
     {
       title: "Active",
@@ -359,7 +349,7 @@ const FeatureList: React.FC = () => {
           bordered
           dataSource={featuresData?.data}
           columns={mergedColumns}
-          loading={isLoading || isFetching}
+          loading={isLoading || isFetching || updatingFeature}
           rowClassName="editable-row"
           pagination={false}
         />

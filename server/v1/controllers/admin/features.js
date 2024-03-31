@@ -40,7 +40,7 @@ const getAll = async (req, res, next) => {
   try {
     // Get All features with child table data
     const getAllFeatures = await sequelize.query(
-      "SELECT `features`.*,`user_features`.`user_id`,`user_features`.`access`,`user_features`.`enabled`  FROM `features` LEFT JOIN `user_features` ON `user_features`.`feature_id`=`features`.`id`",
+      "SELECT `features`.*,`user_features`.`user_id`,`user_features`.`access`,`user_features`.`enabled`, CONCAT(`u`.`first_name`,' ',`u`.`last_name`) as `user_name`  FROM `features` LEFT JOIN `user_features` ON `user_features`.`feature_id`=`features`.`id` LEFT JOIN `users` u on `user_features`.`user_id`=`u`.`id`",
       { type: QueryTypes.SELECT },
     )
 
@@ -153,10 +153,10 @@ const update = async (req, res, next) => {
   const schema = Joi.object({
     feature_name: Joi.string().required(),
     active: Joi.boolean().required(),
-    user_id: Joi.number().required(),
+    user_id: Joi.number().optional().allow(null),
     feature_id: Joi.number().required(),
-    access: Joi.string().required(),
-    enabled: Joi.boolean().required(),
+    access: Joi.string().optional(),
+    enabled: Joi.boolean().optional(),
   })
 
   const validationResult = schema.validate(data, { abortEarly: false })
@@ -200,17 +200,20 @@ const update = async (req, res, next) => {
     await FeatureQueries.updateFeature(data?.feature_id, featuresPayload, t)
 
     // Update Create UserFeatures
-    // Check if userFeatures exists in our DB and upsert
+    // Check if userFeatures exists in our DB
     const checkUserFeatures = await UserFeatureQueries.getOne({
       feature_id: data?.feature_id,
       user_id: data?.user_id,
     })
 
-    if (!checkUserFeatures) {
-      await UserFeatureQueries.create(usersFeaturesPayload, t)
-    } else {
-      await UserFeatureQueries.update(usersFeaturesPayload, t)
+    // Only allow pivot table update if user id is in body
+    if(!checkUserFeatures && usersFeaturesPayload?.user_id){
+      throw new ValidationException(null,"User feature not found. Create first!")
     }
+
+
+    usersFeaturesPayload?.user_id && await UserFeatureQueries.update(usersFeaturesPayload, t)
+
 
     await t.commit()
     res.status(200).json({
