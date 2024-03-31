@@ -1,7 +1,8 @@
 const dotenv = require("dotenv")
+const path = require("path")
 
-dotenv.config()
-
+// Setting different path for Env, since its inside server folder
+dotenv.config({path: path.resolve(__dirname, '../.env')})
 module.exports = {
   development: {
     username: process.env.MY_SQL_USERNAME,

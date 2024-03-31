@@ -72,7 +72,7 @@ const App = () => {
                       path={path}
                       element={
                         user?.role ? (
-                          <Layout type="user">
+                          <Layout type="User">
                             <Component />
                           </Layout>
                         ) : (
@@ -87,10 +87,10 @@ const App = () => {
                       key={`${path}_${i}`}
                       path={path}
                       element={
-                        user?.role !== "admin" ? (
+                        user?.role !== "Admin" ? (
                           <AdminPrivateRouter />
                         ) : (
-                          <Layout type="admin">
+                          <Layout type="Admin">
                             <Component />
                           </Layout>
                         )
@@ -103,7 +103,7 @@ const App = () => {
                       key={`${path}_${i}`}
                       path={path}
                       element={
-                        <Layout type="user">
+                        <Layout type="User">
                           <Component />
                         </Layout>
                       }
@@ -113,7 +113,7 @@ const App = () => {
               },
             )}
             <Route path="*" element={
-              <BasicLayout type="user">
+              <BasicLayout type="User">
                 <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center" }}>Page Not Found!</div>
               </BasicLayout>
 

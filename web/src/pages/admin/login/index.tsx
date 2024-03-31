@@ -1,22 +1,45 @@
-import React, { useEffect } from "react"
+import React, { useContext, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Layout, Row, Col, Form, Input, Button } from "antd"
+import { Layout, Row, Col, Form, Input, Button, message } from "antd"
 import { Content, Header } from "antd/lib/layout/layout"
 import { LeftOutlined, EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons"
-import { parseJwt } from "../../../utils"
+import { AuthContext, parseJwt } from "../../../utils"
+import { useMutation } from "react-query"
+import { loginUser } from "../../../services"
 
 
 const LoginAdminPage = () => {
   const navigate = useNavigate()
+  const { setUser } = useContext(AuthContext)
+
+  const { mutate, isLoading } = useMutation(loginUser, {
+    onSuccess: ({ data }: any) => {
+      localStorage.setItem("role-token", data?.token)
+
+      // Set Auth Context USer
+      setUser(parseJwt())
+
+      navigate("/admin/features")
+    },
+    onError: (err: any) => {
+      message.open({
+        type: "error",
+        content: err?.response?.data?.message || "Error while logging in User"
+      })
+    }
+  })
+
+
+
   const onSubmit = (values) => {
-    // loginUser(values, history));
+    mutate(values)
   }
 
   //Redirect to Landing if already Logged In
   useEffect(() => {
     const user = parseJwt()
-    if (user && user?.role == "admin") {
-      navigate("/")
+    if (user && user?.role == "Admin") {
+      navigate("/admin/features")
     }
   }, [])
 
@@ -43,13 +66,7 @@ const LoginAdminPage = () => {
             <Row>
               <h2>Admin Log in</h2>
             </Row>
-            {/* {loggingErrorMsg && (
-                            <Alert
-                                type="error"
-                                message={loggingErrorMsg}
-                                closable
-                            />
-                        )} */}
+
             <Row style={{ width: "100vw", paddingTop: "1rem" }}>
               <Col md={{ span: 12 }} offset={6}>
                 <Form
@@ -88,7 +105,7 @@ const LoginAdminPage = () => {
                       type="primary"
                       htmlType="submit"
                       style={{ width: "50%" }}
-                    // loading={loggingUser}
+                      loading={isLoading}
                     >
                       Log In
                     </Button>

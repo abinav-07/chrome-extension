@@ -5,7 +5,7 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons"
 import NavBar from "../components/common/nav"
 
 interface props {
-  type: "admin" | "user"
+  type: "Admin" | "User"
   children?: any
 }
 

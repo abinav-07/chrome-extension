@@ -9,7 +9,7 @@ const { Op, QueryTypes } = require("sequelize")
 
 
 /**
- * @api {get} /v1/admin/feature Get Feature
+ * @api {get} /v1/admin/feature Get All Feature
  * @apiName GetAll
  * @apiGroup Features
  * @apiDescription Get All features with child table
@@ -113,7 +113,7 @@ const create=async(req,res,next)=>{
 
 
 /**
- * @api {patch} /v1/admin/feature/update Feature User
+ * @api {patch} /v1/admin/feature/update Update Feature
  * @apiName UpdateFeature
  * @apiGroup Features
  * @apiDescription Update currently selected feature
@@ -223,7 +223,7 @@ const update = async (req, res, next) => {
 }
 
 /**
- * @api {post} /v1/admin/feature/user/create Create Feature
+ * @api {post} /v1/admin/feature/user/create Create Users Features
  * @apiName CreateUserFeatures
  * @apiGroup Features
  * @apiDescription Create feature and user many to many data
@@ -292,7 +292,7 @@ const createUserfeatures=async(req,res,next)=>{
 
 
 /**
- * @api {delete} /v1/admin/feature/:feature_id/delete Delete User
+ * @api {delete} /v1/admin/feature/:feature_id/delete Delete Feature
  * @apiName DeleteOne
  * @apiGroup Features
  * @apiDescription Delete Features and its child datas

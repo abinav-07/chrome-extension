@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv")
 
-dotenv.config()
-
 const { UnauthorizedException } = require("../../exceptions/httpsExceptions")
 const UserQueries = require("../../queries/users")
 
@@ -43,7 +41,7 @@ const checkJWTToken = async(req, res, next) => {
 const checkAdmin = (req, res, next) => {
 try{
   const user=req.user
-  if(user.role!="admin"){
+  if(user.role!="Admin"){
     throw new UnauthorizedException(null,"Unauthorized User")
   }
   next()

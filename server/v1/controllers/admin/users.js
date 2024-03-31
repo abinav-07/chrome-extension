@@ -6,7 +6,7 @@ const { ValidationException } = require("../../exceptions/httpsExceptions")
 const UserQueries = require("../../queries/users")
 
 /**
- * @api {get} /v1/admin/members Get Feature
+ * @api {get} /v1/admin/members Get All Users
  * @apiName GetAll
  * @apiGroup Admin Users
  * @apiDescription Get All users with child table

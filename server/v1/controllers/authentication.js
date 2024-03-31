@@ -1,6 +1,6 @@
 const dotenv = require("dotenv")
 
-dotenv.config()
+
 const jwt = require("jsonwebtoken")
 const Joi = require("joi")
 const bcrypt = require("bcrypt")
@@ -9,7 +9,9 @@ const { ValidationException } = require("../exceptions/httpsExceptions")
 //Queries
 const UsersQueries = require("../queries/users")
 
+
 const jwtSecretKey = `${process.env.JWT_SECRET_KEY}`
+
 
 /**
  * @api {post} /v1/auth/register Register User
@@ -81,7 +83,7 @@ const registerUser = async (req, res, next) => {
     data.password = hashedPassword
 
     // Adding role for the user manually
-    data.role="user"
+    data.role="User"
 
     //Remove Confirmed Password from body data
     delete data.confirm_password

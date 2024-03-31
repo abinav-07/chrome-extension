@@ -7,18 +7,18 @@ import { NavbarItems } from "../../user/nav/items"
 import { removeToken } from "../../../utils"
 
 interface props {
-  type: "admin" | "user"
+  type: "Admin" | "User"
 }
 
 const NavBar = ({ type }: props) => {
   const history = useLocation()
   const navigate = useNavigate()
 
-  const activeKey = history.pathname.split("/")[2]
+  const activeKey = history.pathname.split("/")[2] || history.pathname.split("/")[1]
 
   const logout = () => {
     removeToken("role-token")
-    if (type == "admin") {
+    if (type == "Admin") {
       navigate("/admin/login")
     } else {
       navigate("/login")
@@ -28,13 +28,13 @@ const NavBar = ({ type }: props) => {
   return (
     <NavBarDiv>
       <Menu theme="dark" mode="inline" defaultSelectedKeys={[activeKey]}>
-        {type == "admin" &&
+        {type == "Admin" &&
           AdminNavBarItems?.map(({ key, label, path, icon }) => (
             <NavBarMenuItem key={key} icon={icon}>
               <Link to={path}>{label}</Link>
             </NavBarMenuItem>
           ))}
-        {type == "user" &&
+        {type == "User" &&
           NavbarItems?.map(({ key, label, path, icon }) => (
             <NavBarMenuItem key={key} icon={icon}>
               <Link to={path}>{label}</Link>
