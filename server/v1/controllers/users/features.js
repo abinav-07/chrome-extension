@@ -38,7 +38,7 @@ const getAll = async (req, res, next) => {
       where: {
         user_id: user?.id,
         // Only get access type read and write
-        access:{[Op.ne]:"none"},
+        access: { [Op.ne]: "none" },
         // Nested where clause, only get active features for users
         ["$features.active$"]: true,
       },

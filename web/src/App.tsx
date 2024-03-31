@@ -126,7 +126,10 @@ const App = () => {
                     >
                       Page Not Found!
                     </div>
-                  </BasicLayout>) : (<PrivateRouter />)
+                  </BasicLayout>
+                ) : (
+                  <PrivateRouter />
+                )
               }
             ></Route>
           </Routes>

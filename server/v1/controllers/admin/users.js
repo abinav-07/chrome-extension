@@ -89,13 +89,12 @@ const update = async (req, res, next) => {
     first_name: Joi.string().optional(),
     last_name: Joi.string().optional(),
     email: Joi.string().required().email(),
-    role:Joi.string().optional(),
+    role: Joi.string().optional(),
   })
 
   const validationResult = schema.validate(data, { abortEarly: false })
 
   try {
-
     if (validationResult && validationResult.error)
       throw new ValidationException(null, validationResult.error)
 
@@ -105,7 +104,7 @@ const update = async (req, res, next) => {
     if (!checkUser) throw new ValidationException(null, "User not found!")
 
     // Check if email already exists
-    const user = await UserQueries.getUser({ email: data.email,id:{[Op.ne]:checkUser?.id} })
+    const user = await UserQueries.getUser({ email: data.email, id: { [Op.ne]: checkUser?.id } })
 
     // Check if email already exists
     if (user && user.email && checkUser.email !== data.email)

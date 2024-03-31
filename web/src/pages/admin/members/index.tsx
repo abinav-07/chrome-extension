@@ -1,17 +1,5 @@
 import React, { useContext, useState } from "react"
-import {
-
-  Form,
-  Input,
-
-  Popconfirm,
-
-  Select,
-  Table,
-
-  Typography,
-  message,
-} from "antd"
+import { Form, Input, Popconfirm, Select, Table, Typography, message } from "antd"
 import { useMutation, useQuery } from "react-query"
 import { fetchUsers, updateUser } from "../../../services/users"
 import { AuthContext } from "../../../utils"
@@ -37,7 +25,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   ...restProps
 }) => {
   let inputNode = <Input />
-
 
   if (dataIndex == "role") {
     inputNode = (
@@ -77,7 +64,11 @@ const MemberList: React.FC = () => {
 
   const [editingKey, setEditingKey] = useState(null)
 
-  const { data: usersData, refetch, isLoading } = useQuery(["users"], () => fetchUsers(), {
+  const {
+    data: usersData,
+    refetch,
+    isLoading,
+  } = useQuery(["users"], () => fetchUsers(), {
     keepPreviousData: false,
     refetchOnWindowFocus: false,
     enabled: true,
@@ -92,7 +83,6 @@ const MemberList: React.FC = () => {
       }
     },
   })
-
 
   const { mutate, isLoading: updateLoading } = useMutation(updateUser, {
     onSuccess: () => {
@@ -182,7 +172,11 @@ const MemberList: React.FC = () => {
           <div style={{ display: "flex", flexDirection: "row" }}>
             <Typography.Link
               // Dont allow editing if it is current user or super admin i.e John Don
-              disabled={editingKey !== null || record?.id == user?.user_id || record?.email == "admin@gmail.com"}
+              disabled={
+                editingKey !== null ||
+                record?.id == user?.user_id ||
+                record?.email == "admin@gmail.com"
+              }
               onClick={() => edit(record)}
             >
               Edit
