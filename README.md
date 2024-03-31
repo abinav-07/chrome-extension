@@ -6,7 +6,7 @@ Role based App for users using Node/Express.js and React.js, Sequelize and Jwts
 
 #### Admin Cred: admin@gmail.com admin
 
-`NOTE: Use separate browsers for admin and user pages as I have its a mock project, both authenticated users have token ids assigned to same storage key.`
+`NOTE: Use separate browsers for admin and user pages as its a mock project, both authenticated users have token ids assigned to same storage key.`
 
 This section covers the process for configuring and installing the application packages.
 
