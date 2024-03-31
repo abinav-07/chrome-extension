@@ -13,7 +13,7 @@ This section covers the process for configuring and installing the application p
 - run `npm run doc` to generate a jsdoc, after generating, go to /server/v1/documentation/api directory and open index.html file.
 
 1. Install `Node.js` in your system.
-2. In your terminal, run `npm init -y` && `npm i` to install all the packages.
+2. In your terminal, run `npm i` to install all the packages.
 4. Use `DBeaver` or `MySQL Workbench` for easy database usage.
 5. Add `.env` to your `server/v1` folder, It has exampleenv file, you can copy same values to .env., also add env inside web folder with value `REACT_APP_API=http://localhost:5000/v1` to connect to API
 6. Start SQL in your local machine
