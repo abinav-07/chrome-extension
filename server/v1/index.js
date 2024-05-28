@@ -37,6 +37,6 @@ app.use((req, res, next) =>
 )
 app.use(errorHandler)
 
-app.listen(process.env.PORT || 5000, () => {
-  console.log(chalk.blue(`Server started on ${process.env.PORT || 5000}!`))
+app.listen(process.env.NODE_PORT || 5000, () => {
+  console.log(chalk.blue(`Server started on ${process.env.NODE_PORT || 5000}!`))
 })

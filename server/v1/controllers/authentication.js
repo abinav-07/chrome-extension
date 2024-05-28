@@ -99,7 +99,6 @@ const registerUser = async (req, res, next) => {
       email: registerResponse.email,
       role: registerResponse.role,
     }
-
     // Auth sign in
     const token = jwt.sign(payload, jwtSecretKey)
 

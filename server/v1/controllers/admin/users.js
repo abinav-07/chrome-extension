@@ -1,10 +1,10 @@
 const Joi = require("joi")
 const bcrypt = require("bcrypt")
+const { Op } = require("sequelize")
 const { ValidationException } = require("../../exceptions/httpsExceptions")
 
 //Queries
 const UserQueries = require("../../queries/users")
-const { Op } = require("sequelize")
 
 /**
  * @api {get} /v1/admin/members Get All Users

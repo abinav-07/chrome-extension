@@ -1,11 +1,10 @@
-"use strict"
-
 const fs = require("fs")
 const path = require("path")
 const Sequelize = require("sequelize")
+
 const basename = path.basename(__filename)
 const env = process.env.NODE_ENV || "development"
-const config = require(__dirname + "/../config/config.js")[env]
+const config = require(`${__dirname}/../config/config.js`)[env]
 const db = {}
 
 // This file reads all the models that we created inside this folder and initializes them with sequelize
@@ -15,6 +14,16 @@ if (config.use_env_variable) {
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config)
 }
+
+// Sync the database models with the database schema
+// sequelize
+//   .sync({force:true})
+//   .then(() =>{
+//     return sequelize.seeders.run()
+//   }).then(()=>{
+//     console.log("Connected to the database")
+//   })
+//   .catch((err) => console.error("Unable to connect to the database", err));
 
 fs.readdirSync(__dirname)
   .filter((file) => {

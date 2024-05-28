@@ -12,7 +12,7 @@ module.exports = {
   ignorePatterns: [
     "node_modules/*",
     "**/node_modules/",
-    "/server/**/models/index.js",
+    "./server/**/models/index.js",
     "documentation/*",
     "out/*",
     "**/vendor/*.js",

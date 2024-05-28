@@ -1,5 +1,5 @@
-const UserFeatureQueries = require("../../queries/user_features")
 const { Op } = require("sequelize")
+const UserFeatureQueries = require("../../queries/user_features")
 
 /**
  * @api {get} /v1/features Get Feature
@@ -40,7 +40,7 @@ const getAll = async (req, res, next) => {
         // Only get access type read and write
         access: { [Op.ne]: "none" },
         // Nested where clause, only get active features for users
-        ["$features.active$"]: true,
+        "$features.active$": true,
       },
       include: { all: true },
     })

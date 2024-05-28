@@ -1,11 +1,11 @@
 const Joi = require("joi")
+const { Op, QueryTypes } = require("sequelize")
 const { ValidationException } = require("../../exceptions/httpsExceptions")
 
 //Queries
 const FeatureQueries = require("../../queries/features")
 const UserFeatureQueries = require("../../queries/user_features")
 const { sequelize } = require("../../models")
-const { Op, QueryTypes } = require("sequelize")
 
 /**
  * @api {get} /v1/admin/feature Get All Feature

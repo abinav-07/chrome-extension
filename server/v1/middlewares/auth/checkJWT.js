@@ -37,7 +37,7 @@ const checkJWTToken = async (req, res, next) => {
 
 const checkAdmin = (req, res, next) => {
   try {
-    const user = req.user
+    const { user } = req
     if (user.role != "Admin") {
       throw new UnauthorizedException(null, "Unauthorized User")
     }

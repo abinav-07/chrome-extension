@@ -11,6 +11,7 @@ interface props {
 }
 
 const NavBar = ({ type }: props) => {
+  console.log("Here", type)
   const history = useLocation()
   const navigate = useNavigate()
 
