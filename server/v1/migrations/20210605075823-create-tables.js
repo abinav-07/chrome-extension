@@ -9,21 +9,16 @@ module.exports = {
 
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.createTable(
-        "features",
+        "pages",
         {
           id: {
             type: Sequelize.DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
           },
-          feature_name: {
-            type: Sequelize.DataTypes.STRING(255),
+          url: {
+            type: Sequelize.DataTypes.TEXT,
             allowNull: false,
-          },
-          active: {
-            type: Sequelize.DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: true,
           },
           created_at: {
             type: Sequelize.DataTypes.DATE,
@@ -81,35 +76,27 @@ module.exports = {
       )
 
       await queryInterface.createTable(
-        "user_features",
+        "page_features",
         {
           id: {
             type: Sequelize.DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
           },
-          user_id: {
+          page_id: {
             type: Sequelize.DataTypes.INTEGER,
             allowNull: false,
             references: {
-              model: "users",
+              model: "pages",
               key: "id",
             },
           },
-          feature_id: {
-            type: Sequelize.DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-              model: "features",
-              key: "id",
-            },
-          },
-          access: {
-            type: Sequelize.DataTypes.ENUM("none", "read", "write"),
+          type: {
+            type: Sequelize.DataTypes.STRING,
             allowNull: false,
           },
-          enabled: {
-            type: Sequelize.DataTypes.BOOLEAN,
+          value: {
+            type: Sequelize.DataTypes.TEXT,
             allowNull: false,
           },
           created_at: {
@@ -134,9 +121,9 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     return queryInterface.sequelize.transaction(async (t) => {
-      await queryInterface.dropTable("features", { transaction: t })
+      await queryInterface.dropTable("pages", { transaction: t })
       await queryInterface.dropTable("users", { transaction: t })
-      await queryInterface.dropTable("user_features", { transaction: t })
+      await queryInterface.dropTable("page_features", { transaction: t })
     })
   },
 }

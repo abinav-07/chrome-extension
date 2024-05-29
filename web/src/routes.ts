@@ -4,47 +4,20 @@ import FeatureList from "./pages/admin/features"
 
 import LoginAdminPage from "./pages/admin/login"
 import MemberList from "./pages/admin/members"
-import UserFeatures from "./pages/features"
-import UserFeature from "./pages/features/[id]"
-import LoginUserPage from "./pages/login"
-import RegisterUserPage from "./pages/register"
+import RegisterAdminPage from "./pages/admin/register"
 
 const PageRoutes = [
-  // User pages
-  {
-    name: "Login User Page",
-    path: "/login",
-    privateRoute: false, //access to all users
-    adminRoute: false,
-    layout: BlankLayout,
-    component: LoginUserPage,
-  },
+  // Admin Pages
+
   {
     name: "Register Page",
-    path: "/register",
+    path: "/admin/register",
     privateRoute: false, //access to all users
     adminRoute: false,
     layout: BlankLayout,
-    component: RegisterUserPage,
-  },
-  {
-    name: "Landing Page",
-    path: "/features",
-    privateRoute: true,
-    adminRoute: false,
-    layout: BasicLayout,
-    component: UserFeatures,
-  },
-  {
-    name: "Feature",
-    path: "/features/:id",
-    privateRoute: true,
-    adminRoute: false,
-    layout: BasicLayout,
-    component: UserFeature,
+    component: RegisterAdminPage,
   },
 
-  // Admin Pages
   {
     name: "Admin Login Page",
     path: "/admin/login",

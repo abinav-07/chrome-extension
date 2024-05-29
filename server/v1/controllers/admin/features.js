@@ -3,20 +3,20 @@ const { Op, QueryTypes } = require("sequelize")
 const { ValidationException } = require("../../exceptions/httpsExceptions")
 
 //Queries
-const FeatureQueries = require("../../queries/features")
-const UserFeatureQueries = require("../../queries/user_features")
+const PageQueries = require("../../queries/pages")
+const PageFeatureQueries = require("../../queries/page_features")
 const { sequelize } = require("../../models")
 
 /**
- * @api {get} /v1/admin/feature Get All Feature
+ * @api {get} /v1/admin/pages Get All pages
  * @apiName GetAll
- * @apiGroup Features
- * @apiDescription Get All features with child table
+ * @apiGroup Pages
+ * @apiDescription Get All pages with child table
  *
  *
  * @apiParamExample {json} Request Example:
  * {
- *    "features": FeaturePayload
+ *    "pages": PagePayload
  * }
  *
  * @apiSuccess {Object} Success message
@@ -24,7 +24,7 @@ const { sequelize } = require("../../models")
  * @apiSuccessExample {json} Success Response:
  * HTTP/1.1 200 OK
  * {
- *    "features": FeaturePayload
+ *    "pages": PagePayload
  * }
  *
  * @apiError {Object} error Error object if the update process fails.
@@ -38,13 +38,18 @@ const { sequelize } = require("../../models")
 
 const getAll = async (req, res, next) => {
   try {
-    // Get All features with child table data
-    const getAllFeatures = await sequelize.query(
-      "SELECT `features`.*,`user_features`.`user_id`,`user_features`.`access`,`user_features`.`enabled`, CONCAT(`u`.`first_name`,' ',`u`.`last_name`) as `user_name`  FROM `features` LEFT JOIN `user_features` ON `user_features`.`feature_id`=`features`.`id` LEFT JOIN `users` u on `user_features`.`user_id`=`u`.`id`",
-      { type: QueryTypes.SELECT },
+    // Get All Pages with child table data
+    const getAllPages = await PageQueries.getAll(
+      {
+        include:{
+          all:true,
+          separate: true
+        }
+      }
     )
 
-    res.status(200).json(getAllFeatures)
+      
+    res.status(200).json(getAllPages)
   } catch (err) {
     next(err)
   }
@@ -83,29 +88,61 @@ const getAll = async (req, res, next) => {
 const create = async (req, res, next) => {
   // get payload
   const data = req.body
+  let t;
 
   // Joi validations
   const schema = Joi.object({
-    feature_name: Joi.string().required(),
-    active: Joi.boolean().required(),
+    page_url: Joi.string().required(),
+    extracted_data: Joi.array().items(Joi.object({
+      type:Joi.string().required(),
+      value:Joi.string().required(),
+    }
+    )).required(),
   })
 
   const validationResult = schema.validate(data, { abortEarly: false })
   try {
+    // First, we start a transaction from your connection and save it into a variable
+    t = await sequelize.transaction()
     if (validationResult && validationResult.error)
       throw new ValidationException(null, validationResult.error)
 
-    const checkDuplicate = await FeatureQueries.getFeature({
-      feature_name: data?.feature_name,
+    // Check if page already exists
+    let getPage = await PageQueries.getPage({
+      url: data?.page_url,
     })
-    if (checkDuplicate) throw new ValidationException(null, "Feature name already exists!")
 
-    await FeatureQueries.createFeature(data)
+    if (getPage){
+      // Delete all prev features
+      await PageFeatureQueries.delete({
+        where:{
+          page_id:getPage?.id
+        }
+      },t)
+    }else{
+      // Create new page if page was not available
+      getPage=await PageQueries.createPage({
+        url:data?.page_url
+      },t)
+    }
+
+    // Add all new features
+    for(const extractedElement of data?.extracted_data){
+        await PageFeatureQueries.create({
+          type:extractedElement?.type,
+          value:extractedElement?.value,
+          page_id:getPage?.id
+        },t)
+      
+    }
+
+    await t.commit()
 
     res.status(200).json({
       success: true,
     })
   } catch (err) {
+    await t.rollback()
     next(err)
   }
 }

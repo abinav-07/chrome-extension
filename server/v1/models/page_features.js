@@ -1,7 +1,7 @@
 const { Model } = require("sequelize")
 
 module.exports = (sequelize, DataTypes) => {
-  class UserFeatures extends Model {
+  class PageFeatures extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,40 +9,35 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here such as belongsto, has, hasMany and so on
-      UserFeatures.belongsTo(models.Features, { foreignKey: "feature_id", as: "features" })
-      UserFeatures.belongsTo(models.Users, { foreignKey: "user_id", as: "users" })
+      PageFeatures.belongsTo(models.Pages, { foreignKey: "page_id", as: "page" })
     }
   }
-  UserFeatures.init(
+  PageFeatures.init(
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      user_id: {
+      page_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      feature_id: {
-        type: DataTypes.INTEGER,
+      type: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
-      access: {
-        type: DataTypes.ENUM("none", "read", "write"),
-        allowNull: false,
-      },
-      enabled: {
-        type: DataTypes.BOOLEAN,
+      value: {
+        type: DataTypes.TEXT,
         allowNull: false,
       },
     },
     {
       timestamps: true,
       sequelize,
-      modelName: "UserFeatures",
-      tableName: "user_features",
+      modelName: "PageFeatures",
+      tableName: "page_features",
     },
   )
-  return UserFeatures
+  return PageFeatures
 }

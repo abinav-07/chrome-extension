@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 })
 
 //Routes
-app.use("/v1/", require("./routes/users"))
+app.use("/v1", require("./routes/users"))
 app.use("/v1/admin", require("./routes/admin"))
 
 //Error Handler

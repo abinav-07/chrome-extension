@@ -22,7 +22,7 @@ const PrivateRouter = () => {
     })
   }, [])
 
-  return <Navigate to={"/login"} />
+  return <Navigate to={"/admin/login"} />
 }
 
 const AdminPrivateRouter = () => {
@@ -56,7 +56,6 @@ const App = () => {
   useEffect(() => {
     initialLoad()
   }, [])
-  console.log("here", user)
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider loading={loading} user={user} setUser={setUser} role={user?.role as Roles}>

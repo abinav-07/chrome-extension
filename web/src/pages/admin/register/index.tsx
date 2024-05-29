@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom"
 import Layout, { Header, Content } from "antd/lib/layout/layout"
 import { Row, Col, Form, Input, Button, message } from "antd"
 import { LeftOutlined, EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons"
-import { AuthContext, parseJwt } from "../../utils"
+import { AuthContext, parseJwt } from "../../../utils"
 import { useMutation } from "react-query"
-import { createUser } from "../../services/users"
+import { createUser } from "../../../services/users"
 
 const RegisterUserPage = () => {
   const history = useNavigate()

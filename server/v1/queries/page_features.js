@@ -1,12 +1,12 @@
-const { UserFeatures } = require("../models")
+const { PageFeatures } = require("../models")
 
 /*
- Create a class named UserFeatures which will be used to
+ Create a class named pageFeatures which will be used to
  communicate with the database using sequelize
 */
-class UserFeaturesQueries {
+class PageFeaturesQueries {
   table() {
-    return UserFeatures
+    return PageFeatures
   }
 
   async getAll(query) {
@@ -25,8 +25,8 @@ class UserFeaturesQueries {
   }
 
   // Create new
-  async create(userFeatures, transaction = null) {
-    return await this.table().create({ ...userFeatures }, { transaction })
+  async create(pageFeatures, transaction = null) {
+    return await this.table().create({ ...pageFeatures }, { transaction })
   }
 
   // update using id and values
@@ -35,8 +35,8 @@ class UserFeaturesQueries {
       { ...values },
       {
         where: {
-          feature_id: values?.feature_id,
-          user_id: values?.user_id,
+          page_id: values?.feature_id,
+          type: values?.type,
         },
         transaction,
       },
@@ -52,4 +52,4 @@ class UserFeaturesQueries {
   }
 }
 
-module.exports = new UserFeaturesQueries()
+module.exports = new PageFeaturesQueries()

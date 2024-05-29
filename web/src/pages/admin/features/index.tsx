@@ -1,129 +1,35 @@
 import React, { useState } from "react"
 import {
-  Button,
-  Col,
+  Carousel,
   Form,
-  Input,
   Layout,
-  Modal,
   Popconfirm,
-  Row,
-  Select,
   Table,
-  Tag,
+  TableColumnsType,
   Typography,
   message,
 } from "antd"
 import { useMutation, useQuery } from "react-query"
 import {
-  createFeatures,
-  createUserFeatures,
   fetchFeatures,
   updateFeatures,
 } from "../../../services"
 import { Header } from "antd/lib/layout/layout"
-import { fetchUsers } from "../../../services/users"
 
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-  editing: boolean
-  dataIndex: string
-  title: any
-  inputType: "number" | "text" | "select"
-  record: any
-  index: number
-  children: React.ReactNode
-}
 
-const EditableCell: React.FC<EditableCellProps> = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  let inputNode = <Input />
 
-  if (record?.user_id && dataIndex == "enabled") {
-    inputNode = (
-      <Select placeholder={dataIndex}>
-        <Select.Option value={true}>True</Select.Option>
-        <Select.Option value={false}>False</Select.Option>
-      </Select>
-    )
-  }
-
-  if (dataIndex == "active") {
-    inputNode = (
-      <Select placeholder={dataIndex}>
-        <Select.Option value={true}>True</Select.Option>
-        <Select.Option value={false}>False</Select.Option>
-      </Select>
-    )
-  }
-
-  if (record?.user_id && dataIndex == "access") {
-    inputNode = (
-      <Select placeholder={dataIndex}>
-        <Select.Option value={"none"}>None</Select.Option>
-        <Select.Option value={"read"}>Read</Select.Option>
-        <Select.Option value={"write"}>Write</Select.Option>
-      </Select>
-    )
-  }
-
-  // Dont allow edit for access and enabled if there is no user id
-  if (!record?.user_id && (dataIndex == "access" || dataIndex == "enabled")) {
-    editing = false
-  }
-
-  return (
-    <td {...restProps}>
-      {editing ? (
-        <Form.Item
-          name={dataIndex}
-          style={{ margin: 0 }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
-  )
-}
+const contentStyle = {
+  height: "160px",
+  color: "#fff",
+  lineHeight: "160px",
+  textAlign: "center",
+  background: "#364d79"
+};
 
 const FeatureList: React.FC = () => {
   const [form] = Form.useForm()
-  const [modalForm] = Form.useForm()
-  const [userFeatureCreateForm] = Form.useForm()
   const [editingKey, setEditingKey] = useState(null)
-  const [openModal, setOpenModal] = useState(false)
-  const [userFeatureOpenModal, setUserFeatureOpenModal] = useState(false)
 
-  const { data: usersData } = useQuery(["users"], () => fetchUsers(), {
-    keepPreviousData: false,
-    refetchOnWindowFocus: false,
-    enabled: true,
-    cacheTime: 0,
-
-    select: ({ data }) => {
-      return {
-        data: data?.map((values, i) => ({
-          ...values,
-          key: i,
-        })),
-      }
-    },
-  })
 
   const {
     data: featuresData,
@@ -135,59 +41,25 @@ const FeatureList: React.FC = () => {
     refetchOnWindowFocus: false,
     enabled: true,
     cacheTime: 0,
-
     select: ({ data }) => {
+      data.forEach(page => {
+        const imageValues = page?.page_features?.filter(item => item.type === 'image').map(item => item.value);
+        const combinedImageObject = {
+          type: 'image',
+          value: imageValues.flat(),
+        };
+
+        const result = page?.page_features?.filter(item => item.type !== 'image').concat(combinedImageObject);
+        page.page_features = result
+      });
       return {
         data: data?.map((values, i) => ({
           ...values,
           key: i,
-          active: Boolean(values?.active),
-          enabled: Boolean(values?.enabled),
         })),
       }
     },
   })
-
-  // Create New Features Mutation
-  const { mutate: createFeature, isLoading: createLoading } = useMutation(createFeatures, {
-    onSuccess: () => {
-      setOpenModal(false)
-      // Refetch features on successful creation
-      featuresRefetch()
-      message.open({
-        type: "success",
-        content: "Successfully Created Feature",
-      })
-    },
-    onError: () => {
-      message.open({
-        type: "error",
-        content: "Error when creating feature.",
-      })
-    },
-  })
-
-  // Create New Features Mutation
-  const { mutate: createUserFeature, isLoading: createUserFeatureLoading } = useMutation(
-    createUserFeatures,
-    {
-      onSuccess: () => {
-        setUserFeatureOpenModal(false)
-        // Refetch features on successful creation
-        featuresRefetch()
-        message.open({
-          type: "success",
-          content: "Successfully Created User Feature",
-        })
-      },
-      onError: (err: any) => {
-        message.open({
-          type: "error",
-          content: err?.response?.data?.message || "Error when creating User feature.",
-        })
-      },
-    },
-  )
 
   const { mutate: updateFeature, isLoading: updatingFeature } = useMutation(updateFeatures, {
     onSuccess: () => {
@@ -211,7 +83,6 @@ const FeatureList: React.FC = () => {
   const isEditing = (record: any) => record.key === editingKey
 
   const edit = (record: Partial<any> & { key: React.Key }) => {
-    form.setFieldsValue({ ...record })
     setEditingKey(record.key)
   }
 
@@ -220,67 +91,114 @@ const FeatureList: React.FC = () => {
     setEditingKey(null)
   }
 
-  const save = async (key: React.Key) => {
-    try {
-      await form.validateFields()
-      const formValues = form.getFieldsValue()
+  const expandedRowRender = (row) => {
 
-      const newData = [...featuresData?.data]
-      const index = newData.findIndex((item) => key === item.key)
-      const item = newData[index]
+    const columns: TableColumnsType<any> = [
 
-      updateFeature({ ...formValues, feature_id: item?.id, user_id: item?.user_id })
-    } catch (err) {
-      console.log(err)
-    }
+      {
+        title: 'Product Name', dataIndex: 'title', key: 'title',
+        width: 200,
+        render: (text) => text || '-',
+        fixed: 'left',
+      },
+      {
+        title: 'Date', dataIndex: 'created_at', key: 'date',
+        width: 130,
+        render: (_: any, record: any) => `${new Date(record?.created_at).toISOString().split('T')[0]}`
+      },
+      {
+        title: 'Brand', dataIndex: 'brand', key: 'brand',
+        width: 150,
+        render: (_: any, record: any) => `${record?.brand || record?.category || "-"}`
+
+      },
+      {
+        title: 'Price', dataIndex: 'price', key: 'price',
+        width: 150,
+        render: (text) => text || '-',
+      },
+      {
+        title: 'Description', dataIndex: 'description', key: 'description',
+        width: 400,
+        render: (_: any, record: any) => {
+          return (
+            <>
+
+              {record?.description || record?.detail || record?.facts || "-"}
+
+            </>
+          )
+
+        },
+      },
+      {
+        title: 'Images', dataIndex: 'image', key: 'image',
+        width: 300,
+        render: (key) => {
+          return (
+            <Carousel style={{ width: '100%', maxWidth: '200px' }}>
+              {key?.map((img: any, index: any) => {
+                return (
+                  <div key={index} >
+                    <img src={img} key={index} width={200} height={200} />
+                  </div>
+                )
+              })}
+            </Carousel>
+          )
+        }
+      },
+    ];
+
+    const transformedData = row?.page_features?.reduce((acc: any, item: any) => {
+
+      acc[item.type] = item.value;
+
+      if (item.created_at) {
+        acc.created_at = item.created_at;
+      }
+
+      return acc;
+    }, {});
+
+    return (
+      <Table
+        bordered columns={columns} dataSource={[transformedData]} pagination={false} />
+
+
+    )
   }
+
 
   const columns = [
     {
-      title: "Feature id",
+      title: "Page id",
       dataIndex: "id",
       width: "20%",
     },
     {
-      title: "Feature",
-      dataIndex: "feature_name",
+      title: "Page Name",
+      dataIndex: "url",
       width: "25%",
-      editable: true,
+      render: (_: any, record: any) => {
+        const domain = record?.url ? (new URL(record?.url))?.hostname : "-";
+        const name = domain.split('.')[1];
+        return <>
+          <a href={record?.url} target="_blank">{name}: {record?.page_features?.filter(el => el?.type == "title")?.[0]?.value}</a>
+        </>
+      }
     },
     {
-      title: "User",
-      dataIndex: "user_id",
-      width: "15%",
-      render: (_, record: any) => {
-        return record?.user_name
-      },
-    },
-    {
-      title: "Active",
-      dataIndex: "active",
-      width: "15%",
-      editable: true,
-      render: (record: any) => {
-        return record ? <Tag color="green">Active</Tag> : <Tag color="grey">InActive</Tag>
-      },
-    },
-    {
-      title: "access",
-      dataIndex: "access",
-      width: "40%",
-      editable: true,
-      render: (record: any) => {
-        return record ? <Tag color="green">{record}</Tag> : "-"
-      },
-    },
-    {
-      title: "enabled",
-      dataIndex: "enabled",
-      width: "40%",
-      editable: true,
-      render: (record: any) => {
-        return record ? <Tag color="green">True</Tag> : <Tag color="grey">False</Tag>
-      },
+      title: "Page Domain",
+      dataIndex: "url",
+      width: "25%",
+      render: (_: any, record: any) => {
+        const domain = record?.url ? (new URL(record?.url))?.hostname : "-";
+
+        return <>
+          {domain}
+        </>
+      }
     },
     {
       title: "Action",
@@ -289,18 +207,22 @@ const FeatureList: React.FC = () => {
         const editable = isEditing(record)
 
         return editable ? (
-          <span>
-            <Typography.Link onClick={() => save(record.key)} style={{ marginRight: 8 }}>
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
+          <div style={{ display: "flex" }}>
+            <div>
+              <Typography.Link onClick={() => console.log(record.key)} style={{ display: "flex", marginRight: 8, color: "red", inlineSize: "max-content" }}>
+                Confirm
+              </Typography.Link>
+            </div>
+            <div>
+              <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                <a>Cancel</a>
+              </Popconfirm>
+            </div>
+          </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "row" }}>
             <Typography.Link disabled={editingKey !== null} onClick={() => edit(record)}>
-              Edit
+              Delete
             </Typography.Link>
           </div>
         )
@@ -308,170 +230,25 @@ const FeatureList: React.FC = () => {
     },
   ]
 
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col
-    }
-    return {
-      ...col,
-      onCell: (record: any) => ({
-        record,
-        inputType: col.dataIndex === "active" ? "select" : "text",
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    }
-  })
+
 
   return (
     <>
       <Layout>
         <Header style={{ background: "#fff" }}>
-          <Row>
-            <Col span={8} offset={12} style={{ textAlign: "end" }}>
-              <Button onClick={() => setOpenModal(true)}>Create Feature</Button>
-            </Col>
-            <Col span={1} offset={1} style={{ textAlign: "end" }}>
-              <Button onClick={() => setUserFeatureOpenModal(true)}>Create User Features</Button>
-            </Col>
-          </Row>
+          <h3>Page and their Features </h3>
         </Header>
       </Layout>
       <Form form={form} component={false}>
-        <h3>Create/Edit User Features </h3>
         <Table
-          components={{
-            body: {
-              cell: EditableCell,
-            },
-          }}
           bordered
+          expandable={{ expandedRowRender }}
           dataSource={featuresData?.data}
-          columns={mergedColumns}
+          columns={columns}
           loading={isLoading || isFetching || updatingFeature}
-          rowClassName="editable-row"
           pagination={false}
         />
       </Form>
-
-      <Modal
-        title="Create Feature"
-        open={openModal}
-        onOk={modalForm.submit}
-        confirmLoading={createLoading}
-        onCancel={() => {
-          modalForm.resetFields()
-          setOpenModal(false)
-        }}
-      >
-        <Form form={modalForm} onFinish={createFeature}>
-          <Form.Item
-            label="Feature Name"
-            name="feature_name"
-            rules={[
-              {
-                required: true,
-                message: `Please Input Feature Name!`,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Active Status"
-            name="active"
-            rules={[
-              {
-                required: true,
-                message: `Please Select!`,
-              },
-            ]}
-          >
-            <Select placeholder="Is Active">
-              <Select.Option value={true}>True</Select.Option>
-              <Select.Option value={false}>False</Select.Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Create User Feature"
-        open={userFeatureOpenModal}
-        onOk={userFeatureCreateForm.submit}
-        confirmLoading={createUserFeatureLoading}
-        onCancel={() => {
-          userFeatureCreateForm.resetFields()
-          setUserFeatureOpenModal(false)
-        }}
-      >
-        <Form form={userFeatureCreateForm} onFinish={createUserFeature}>
-          <Form.Item
-            label="Feature Name"
-            name="feature_id"
-            rules={[
-              {
-                required: true,
-                message: `Please Input Feature Name!`,
-              },
-            ]}
-          >
-            <Select placeholder={"Features"}>
-              {featuresData?.data?.map((feature) => (
-                <Select.Option value={feature?.id}>{feature?.feature_name}</Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="User Name"
-            name="user_id"
-            rules={[
-              {
-                required: true,
-                message: `Please Input Feature Name!`,
-              },
-            ]}
-          >
-            <Select placeholder={"Users"}>
-              {usersData?.data?.map((user) => (
-                <Select.Option value={user?.id}>{user?.first_name}</Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="access Status"
-            name="access"
-            rules={[
-              {
-                required: true,
-                message: `Please Select!`,
-              },
-            ]}
-          >
-            <Select placeholder="Access type">
-              <Select.Option value={"none"}>None</Select.Option>
-              <Select.Option value={"read"}>Read</Select.Option>
-              <Select.Option value={"write"}>Write</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="Enabled Status"
-            name="enabled"
-            rules={[
-              {
-                required: true,
-                message: `Please Select!`,
-              },
-            ]}
-          >
-            <Select placeholder="Is Enabled">
-              <Select.Option value={true}>True</Select.Option>
-              <Select.Option value={false}>False</Select.Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
     </>
   )
 }
