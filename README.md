@@ -12,7 +12,7 @@ This section covers the process for configuring and installing the application p
 
 - run `npm i` and `npm run doc` in root directory to generate a jsdoc, after generating, go to /server/v1/documentation/api directory and open index.html file for APIs documentation.
 
-1. Install `Node.js` in your system.
+1. Install `Node.js v ^18.17.0` in your system. USe `nvm install ^18.17.0` and `nvm use 18.17.0`.
 2. Install `docker` in your system.
 3. Add `.env` to your `root` directory, It has exampleenv file, you can copy same values to .env.
 4. Go to `./web` directory and run `npm run build` to generate the build for extension.
@@ -30,6 +30,9 @@ This section covers the process for configuring and installing the application p
 - /admin/members
 
 11. Register some users from /register page, and then use admin dashboard to see atleast some user data.
+
+`Final Note: If docker doesnt work for you, copy the envs in both FE BE folders and run npm i in all three folders (including root).
+After completion, hit npm run start for FE and npm run server for BE in their respective folders`
 
 ### Happy Codding!
 

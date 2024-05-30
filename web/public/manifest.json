@@ -2,7 +2,7 @@
  
     "name": "Scrapper Extension",
     "manifest_version": 3,
-    "version": "1.0",
+    "version": "1.0.0",
     "description": "A scraping extension using React",
     "permissions": ["activeTab"],  
     "host_permissions": [
