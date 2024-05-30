@@ -112,7 +112,7 @@ const App = () => {
                       key={`${path}_${i}`}
                       path={path}
                       element={
-                        <Layout type="User">
+                        <Layout type="Admin">
                           <Component />
                         </Layout>
                       }
@@ -125,7 +125,7 @@ const App = () => {
               path="*"
               element={
                 user?.role ? (
-                  <BasicLayout type="User">
+                  <BasicLayout type="Admin">
                     <div
                       style={{
                         display: "flex",

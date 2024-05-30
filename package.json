@@ -10,10 +10,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format:fix": "prettier --write './**/*.{js,ts}{x,}'",
-    "lint": "eslint --fix --ext .js,.jsx .",
-    "doc": "apidoc -i ./server/v1/controllers -e ./server/v1/node_modules -o ./server/v1/documentation/api"
+    "doc": "apidoc -i ./server/v1/controllers -e ./server/v1/node_modules -o ./server/v1/documentation/api",
+    "start:win": "cd web && npm install && cd ../server/v1 && npm install && cd ../.. && concurrently \"npm start --prefix web\" \"npm run server --prefix server/v1\""
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-custom": "^0.0.0",
@@ -29,5 +30,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "apidoc": "^1.2.0"
+  }
 }

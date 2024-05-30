@@ -11,7 +11,6 @@ interface props {
 }
 
 const NavBar = ({ type }: props) => {
-  console.log("Here", type)
   const history = useLocation()
   const navigate = useNavigate()
 
@@ -21,8 +20,6 @@ const NavBar = ({ type }: props) => {
     removeToken("role-token")
     if (type == "Admin") {
       navigate("/admin/login")
-    } else {
-      navigate("/login")
     }
   }
 

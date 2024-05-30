@@ -17,7 +17,7 @@ const RegisterUserPage = () => {
       localStorage.setItem("role-token", data?.token)
       // Set Auth Context USer
       setUser(parseJwt())
-      history("/features")
+      history("/admin/login")
     },
     onError: (err: any) => {
       message.open({
@@ -42,7 +42,7 @@ const RegisterUserPage = () => {
   //Redirect to Landing if already Logged In
   useEffect(() => {
     if (parseJwt()) {
-      history("/")
+      history("/admin/features")
     }
   })
 
@@ -63,7 +63,7 @@ const RegisterUserPage = () => {
               style={{ textAlign: "end" }}
             >
               <Button>
-                <Link to="/login">Already have an account? Log In</Link>
+                <Link to="/admin/login">Already have an account? Log In</Link>
               </Button>
             </Col>
           </Row>

@@ -100,7 +100,7 @@ const FeatureList: React.FC = () => {
       },
       {
         title: 'Brand', dataIndex: 'brand', key: 'brand',
-        width: "10%",
+        width: "20%",
         render: (_: any, record: any) => `${record?.brand || record?.category || "-"}`
 
       },
@@ -111,7 +111,7 @@ const FeatureList: React.FC = () => {
       },
       {
         title: 'Description', dataIndex: 'description', key: 'description',
-        width: "20%",
+        width: "30%",
         render: (_: any, record: any) => {
           return (
             <>

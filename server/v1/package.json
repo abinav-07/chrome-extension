@@ -2,12 +2,12 @@
   "name": "node-app",
   "version": "1.0.0",
   "private": true,
-  
   "scripts": {
-    "migrate":"npx sequelize-cli db:migrate",
+    "migrate": "npx sequelize-cli db:migrate",
     "server": "npm run migrate && nodemon index.js"
   },
   "dependencies": {
+    "apidoc": "^1.2.0",
     "axios": "^1.6.8",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",

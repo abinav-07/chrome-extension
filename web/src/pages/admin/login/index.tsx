@@ -51,6 +51,12 @@ const LoginAdminPage = () => {
                 Back
               </Button>
             </Col>
+            <Col offset={8} span={8} style={{ textAlign: "end" }}>
+              <Button onClick={() => navigate("/admin/register")}>
+                <LeftOutlined />
+                Create Account?
+              </Button>
+            </Col>
           </Row>
         </Header>
         <Content>
