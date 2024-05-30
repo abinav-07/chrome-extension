@@ -1,4 +1,4 @@
-<!-- Use cmd+shift+v in macOS to open as a preview -->
+<!-- Use cmd+shift+v in macOS or ctrl+alt+v on windows to open as a preview -->
 # Scrapper Extension 
 Scrapper Extension using Node/Express.js and React.js, Sequelize and Jwts, manifest.json.
 
@@ -10,7 +10,7 @@ Scrapper Extension using Node/Express.js and React.js, Sequelize and Jwts, manif
 
 This section covers the process for configuring and installing the application packages.
 
-- run `npm run i && npm run doc` in root directory to generate a jsdoc, after generating, go to /server/v1/documentation/api directory and open index.html file for APIs documentation.
+- run `npm i` and `npm run doc` in root directory to generate a jsdoc, after generating, go to /server/v1/documentation/api directory and open index.html file for APIs documentation.
 
 1. Install `Node.js` in your system.
 2. Install `docker` in your system.
