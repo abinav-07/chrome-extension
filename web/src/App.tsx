@@ -61,6 +61,17 @@ const App = () => {
       <AuthProvider loading={loading} user={user} setUser={setUser} role={user?.role as Roles}>
         <Router>
           <Routes>
+            <Route
+              path="/"
+              element={
+                user?.role == "Admin" ? (
+                  <Navigate to="/admin/features" />
+                ) : (
+                  <AdminPrivateRouter />
+                )
+              }
+            />
+
             {PageRoutes.map(
               ({ path, privateRoute, adminRoute, layout: Layout, component: Component }, i) => {
                 if (privateRoute && !adminRoute) {

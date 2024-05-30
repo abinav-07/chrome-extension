@@ -1,9 +1,9 @@
 {
  
-    "name": "Chrome Extension",
+    "name": "Scrapper Extension",
     "manifest_version": 3,
     "version": "1.0",
-    "description": "A scraping Chrome extension using React",
+    "description": "A scraping extension using React",
     "permissions": ["activeTab"],  
     "host_permissions": [
       "<all_urls>"

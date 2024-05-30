@@ -16,7 +16,7 @@ export const createFeatures = async (values: any) => {
   return API.post(`/admin/pages/create`, values)
 }
 
-export const updateFeatures = async (values: any) => {
-  return API.patch(`/admin/pages/update`, values)
+export const deletePage = async (id: number) => {
+  return API.delete(`/admin/pages/${id}/delete`)
 }
 

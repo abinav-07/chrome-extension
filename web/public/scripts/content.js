@@ -74,7 +74,10 @@ const extractArticleData = () => {
       page_url: pageUrl,
       extracted_data: extractedData,
     };
-
-    chrome.runtime.sendMessage(data);
+    // Only send to background script if its a legit product detail website i.e has product title
+    if(extractedData?.find(e=>e?.type=="title")){
+      chrome.runtime.sendMessage(data);
+    }
+    
   });
 

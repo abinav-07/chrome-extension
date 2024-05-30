@@ -11,20 +11,13 @@ import {
 } from "antd"
 import { useMutation, useQuery } from "react-query"
 import {
+  deletePage,
   fetchFeatures,
-  updateFeatures,
 } from "../../../services"
 import { Header } from "antd/lib/layout/layout"
+import { Content } from "antd/es/layout/layout"
 
 
-
-const contentStyle = {
-  height: "160px",
-  color: "#fff",
-  lineHeight: "160px",
-  textAlign: "center",
-  background: "#364d79"
-};
 
 const FeatureList: React.FC = () => {
   const [form] = Form.useForm()
@@ -61,7 +54,7 @@ const FeatureList: React.FC = () => {
     },
   })
 
-  const { mutate: updateFeature, isLoading: updatingFeature } = useMutation(updateFeatures, {
+  const { mutate: removePage, isLoading: deletingFeature } = useMutation(deletePage, {
     onSuccess: () => {
       // Reset Editing Key on success
       setEditingKey(null)
@@ -69,13 +62,13 @@ const FeatureList: React.FC = () => {
       featuresRefetch()
       message.open({
         type: "success",
-        content: "Successfully Updated",
+        content: "Successfully Deleted",
       })
     },
     onError: (err: any) => {
       message.open({
         type: "error",
-        content: err?.response?.data?.message || "Error while updating",
+        content: err?.response?.data?.message || "Error while deleting",
       })
     },
   })
@@ -97,29 +90,28 @@ const FeatureList: React.FC = () => {
 
       {
         title: 'Product Name', dataIndex: 'title', key: 'title',
-        width: 200,
         render: (text) => text || '-',
-        fixed: 'left',
+        width: "25%",
       },
       {
         title: 'Date', dataIndex: 'created_at', key: 'date',
-        width: 130,
-        render: (_: any, record: any) => `${new Date(record?.created_at).toISOString().split('T')[0]}`
+        width: "25%",
+        render: (_: any, record: any) => `${record?.created_at ? new Date(record?.created_at).toISOString().split('T')[0] : "-"}`
       },
       {
         title: 'Brand', dataIndex: 'brand', key: 'brand',
-        width: 150,
+        width: "10%",
         render: (_: any, record: any) => `${record?.brand || record?.category || "-"}`
 
       },
       {
         title: 'Price', dataIndex: 'price', key: 'price',
-        width: 150,
+        width: "20%",
         render: (text) => text || '-',
       },
       {
         title: 'Description', dataIndex: 'description', key: 'description',
-        width: 400,
+        width: "20%",
         render: (_: any, record: any) => {
           return (
             <>
@@ -133,10 +125,10 @@ const FeatureList: React.FC = () => {
       },
       {
         title: 'Images', dataIndex: 'image', key: 'image',
-        width: 300,
+        width: "20%",
         render: (key) => {
           return (
-            <Carousel style={{ width: '100%', maxWidth: '200px' }}>
+            <Carousel style={{ maxWidth: '200px' }} autoplay arrows>
               {key?.map((img: any, index: any) => {
                 return (
                   <div key={index} >
@@ -162,8 +154,11 @@ const FeatureList: React.FC = () => {
     }, {});
 
     return (
+
       <Table
-        bordered columns={columns} dataSource={[transformedData]} pagination={false} />
+        bordered columns={columns} dataSource={[transformedData]} pagination={false}
+      />
+
 
 
     )
@@ -174,12 +169,12 @@ const FeatureList: React.FC = () => {
     {
       title: "Page id",
       dataIndex: "id",
-      width: "20%",
+      width: "25%",
     },
     {
       title: "Page Name",
       dataIndex: "url",
-      width: "25%",
+      width: "50%",
       render: (_: any, record: any) => {
         const domain = record?.url ? (new URL(record?.url))?.hostname : "-";
         const name = domain.split('.')[1];
@@ -203,13 +198,14 @@ const FeatureList: React.FC = () => {
     {
       title: "Action",
       dataIndex: "operation",
+      width: "20%",
       render: (_: any, record: any) => {
         const editable = isEditing(record)
 
         return editable ? (
           <div style={{ display: "flex" }}>
             <div>
-              <Typography.Link onClick={() => console.log(record.key)} style={{ display: "flex", marginRight: 8, color: "red", inlineSize: "max-content" }}>
+              <Typography.Link onClick={() => removePage(record.id)} style={{ display: "flex", marginRight: 8, color: "red", inlineSize: "max-content" }}>
                 Confirm
               </Typography.Link>
             </div>
@@ -238,17 +234,21 @@ const FeatureList: React.FC = () => {
         <Header style={{ background: "#fff" }}>
           <h3>Page and their Features </h3>
         </Header>
+        <Content>
+          <Form form={form} component={false}>
+            <Table
+              bordered
+              expandable={{ expandedRowRender }}
+              dataSource={featuresData?.data}
+              columns={columns}
+              loading={isLoading || isFetching || deletingFeature}
+              pagination={false}
+            />
+          </Form>
+        </Content>
+
       </Layout>
-      <Form form={form} component={false}>
-        <Table
-          bordered
-          expandable={{ expandedRowRender }}
-          dataSource={featuresData?.data}
-          columns={columns}
-          loading={isLoading || isFetching || updatingFeature}
-          pagination={false}
-        />
-      </Form>
+
     </>
   )
 }
