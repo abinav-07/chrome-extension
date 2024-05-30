@@ -4,30 +4,20 @@
   "description": "Main",
   "private": true,
   "workspaces": [
-    "server",
-    "web"
+    "server/*",
+    "web/*"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format:fix": "prettier --write './**/*.{js,ts}{x,}'",
     "doc": "apidoc -i ./server/v1/controllers -e ./server/v1/node_modules -o ./server/v1/documentation/api",
-    "start:win": "cd web && npm install && cd ../server/v1 && npm install && cd ../.. && concurrently \"npm start --prefix web\" \"npm run server --prefix server/v1\""
+    "start:win": "cd web && npm install && cd ../server/v1 && npm install && cd ../.. && npm i && concurrently \"npm start --prefix web\" \"npm run server --prefix server/v1\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "eslint": "^8.57.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-custom": "^0.0.0",
-    "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-import": "^2.22.1",
     "prettier": "^3.2.5"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
