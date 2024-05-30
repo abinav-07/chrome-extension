@@ -5,7 +5,6 @@
   
   "scripts": {
     "migrate":"npx sequelize-cli db:migrate",
-    "doc": "apidoc -i controllers -e node_modules -o documentation/api",
     "server": "npm run migrate && nodemon index.js"
   },
   "dependencies": {

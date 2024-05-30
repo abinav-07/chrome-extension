@@ -30,6 +30,8 @@ services:
       db:
         condition: service_healthy
     env_file: .env
+    # volumes:
+    #   - ./server/v1:/node/app
     ports:
       - 5000:5000
     container_name: node-app
@@ -49,4 +51,4 @@ services:
       - backend
 
 volumes:
-  mysql-data:
+  mysql-data: # Define a named volume for persistent MySQL data

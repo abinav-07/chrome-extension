@@ -4,11 +4,9 @@ const checkAndAdd = (extractedObjects, element, checkAttributeList) => {
   const includesAll =
     (
       // Element must include all the checkList
-      checkAttributeList?.every((item) => {return element?.id?.toLowerCase()?.includes(item?.toLowerCase())})
-      ||
+      checkAttributeList?.every((item) => {return element?.id?.toLowerCase()?.includes(item?.toLowerCase())})      ||
       //  Atleast one Class Name must include all the checklist
-      checkAttributeList?.every((item) => element?.classList?.length > 0 && [...element?.classList].some(className => className?.toLowerCase()?.includes(item?.toLowerCase())))
-      ||
+      checkAttributeList?.every((item) => element?.classList?.length > 0 && [...element?.classList].some(className => className?.toLowerCase()?.includes(item?.toLowerCase())))      ||
       //  Atleast one attribute must include all the checklist
       checkAttributeList?.every((item) => [...element?.attributes].some(attribute => attribute?.value?.toLowerCase()?.includes(item?.toLowerCase())))
     )

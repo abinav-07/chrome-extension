@@ -1,41 +1,35 @@
 <!-- Use cmd+shift+v in macOS to open as a preview -->
-# role-based-app
-Role based App for users using Node/Express.js and React.js, Sequelize and Jwts
+# Scrapper Extension 
+Scrapper Extension using Node/Express.js and React.js, Sequelize and Jwts, manifest.json.
 
 ### CONFIGURATION
 
 #### Admin Cred: admin@gmail.com admin
 
-`NOTE: Use separate browsers for admin and user pages as its a mock project, both authenticated users have token ids assigned to same storage key.`
+`NOTE: Seeder is already run along with migrations`
 
 This section covers the process for configuring and installing the application packages.
 
-- run `npm run doc` to generate a jsdoc, after generating, go to /server/v1/documentation/api directory and open index.html file.
+- run `npm run i && npm run doc` in root directory to generate a jsdoc, after generating, go to /server/v1/documentation/api directory and open index.html file for APIs documentation.
 
 1. Install `Node.js` in your system.
-2. In your terminal, run `npm i` to install all the packages.
-4. Use `DBeaver` or `MySQL Workbench` for easy database usage.
-5. Add `.env` to your `server/v1` folder, It has exampleenv file, you can copy same values to .env., also add env inside web folder with value `REACT_APP_API=http://localhost:5000/v1` to connect to API
-6. Start SQL in your local machine
-7. create a database named `role_based_app` in your local mysql
-8. run `npx sequelize-cli db:migrate` in your `server/v1` folder's terminal to migrate the database
-Also run `npx sequelize-cli db:seed:all` in your terminal to migrate the database
-9. run `npm run dev` in root directory to start the application, dont forget to kill your previous ports using `npx kill-port 3000` and `5000` similarly.
-
-11. From your post man, try out the APIs by taking references from the jsDoc generated HTML file.
-
-12. The urls are for the application pages are:
+2. Install `docker` in your system.
+3. Add `.env` to your `root` directory, It has exampleenv file, you can copy same values to .env.
+4. Go to `./web` directory and run `npm run build` to generate the build for extension.
+5. After building extension, go to your web browser and type `[yourbrowsername]://extensions` or go to extensions setting page, click on load unpacked and select the `build` directory that we built.
+6. In root directory, run `docker compose up --build` to run the application, both react and node apps will be run, node.js port is taken from env, react runs on default port.
+7. You can now access your applications, 5001 for database, 3000 (default) react and 5000 from env for nodejs.
+8. To check if extension worked, open any product in your needed ecommerce website(tested in daraz and amazon).
+9. You will see the scrapped data in admin dashboard page.
+10. The urls are for the application pages are:
 #### User Routes
-- /login Login user,
 - /register
-- /features
-- /features/:id
-
 #### Admin Routes
-- /admin/login Login user,
+- /admin/login Login admin,
 - /admin/features
+- /admin/members
 
-13. Register some users from /register page, and then use admin dashboard to see atleast some user data.
+11. Register some users from /register page, and then use admin dashboard to see atleast some user data.
 
-##Happy Codding
+### Happy Codding!
 

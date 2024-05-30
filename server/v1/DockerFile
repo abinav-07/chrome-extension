@@ -18,10 +18,9 @@ RUN npm install -g nodemon
 # #FOR MIgrations
 RUN npm install -g sequelize 
 
-RUN npm install -g apidoc
-
 #Set User privileage using the application 
 USER node
+
 #Expose port that we can listen to
 EXPOSE 5000
 #RUN
