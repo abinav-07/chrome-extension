@@ -43,6 +43,7 @@ services:
       - 3000:3000
     volumes:
       - ./web:/react/app
+      - /react/app/node_modules
     container_name: react-app
     env_file: .env
     depends_on:
